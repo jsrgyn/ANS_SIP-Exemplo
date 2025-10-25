@@ -1,0 +1,1479 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSpy v2008 sp1 (http://www.altova.com) by erick.dantas (EMBRACE) -->
+<!-- edited by michel.saddock - ANS -->
+<ansSIP:schema xmlns:ansSIP="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<ansSIP:include schemaLocation="sipSimpleTypeV1_02.xsd"/>
+	<ansSIP:complexType name="ct_cabecalhoTransacao">
+		<ansSIP:sequence>
+			<ansSIP:element name="identificacaoTransacao">
+				<ansSIP:complexType>
+					<ansSIP:sequence>
+						<ansSIP:element name="tipoTransacao" type="st_tipoTransacao"/>
+						<ansSIP:element name="sequencialTransacao" type="st_sequencialTransacao"/>
+						<ansSIP:element name="dataHoraRegistroTransacao" type="st_dataHora"/>
+					</ansSIP:sequence>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="falhaNegocio" type="ct_falhaNegocio" minOccurs="0"/>
+			<ansSIP:element name="origem">
+				<ansSIP:complexType>
+					<ansSIP:choice>
+						<ansSIP:element name="registroANS" type="st_registroANS"/>
+						<ansSIP:element name="cnpj" type="st_CNPJ"/>
+					</ansSIP:choice>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="destino">
+				<ansSIP:complexType>
+					<ansSIP:choice>
+						<ansSIP:element name="registroANS" type="st_registroANS"/>
+						<ansSIP:element name="cnpj" type="st_CNPJ"/>
+					</ansSIP:choice>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="versaoPadrao" type="st_versao"/>
+			<ansSIP:element name="identificacaoSoftwareGerador" type="ct_identificacaoSoftwareGerador"/>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_dataTrimestreReconhecimento">
+		<ansSIP:sequence>
+			<ansSIP:element name="dia" type="st_diaSelecao">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Dia do reconhecimento, deverá ser sempre 01</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="mes" type="st_mesSelecao">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Mês do reconhecimento, deverá ser 01 ou 04 ou 07 ou 10</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="ano" type="st_anoReconhecimento">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Ano de reconhecimento deverá ser a partir de 2010(inclusive)</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_dataTrimestreOcorrencia">
+		<ansSIP:sequence>
+			<ansSIP:element name="dia" type="st_diaSelecao">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Dia do envio, deverá ser sempre 01</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="mes" type="st_mesSelecao">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Mês do envio, deverá ser 01 ou 04 ou 07 ou 10</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="ano" type="st_anoOcorrencia">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Ano de Ocorrência deve ser a partir de 2002 (inclusive)</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_envioSip">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Envio SIP </ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="dataTrimestreReconhecimento" type="ct_dataTrimestreReconhecimento"/>
+			<ansSIP:element name="formaContratacao" minOccurs="0">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Formas de contratação disponíveis</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:sequence>
+						<ansSIP:element name="individualFamiliar" minOccurs="0">
+							<ansSIP:annotation>
+								<ansSIP:documentation>Contratação Individual e Familiar</ansSIP:documentation>
+							</ansSIP:annotation>
+							<ansSIP:complexType>
+								<ansSIP:sequence>
+									<ansSIP:element name="segmentacao" type="ct_segmentacao"/>
+								</ansSIP:sequence>
+							</ansSIP:complexType>
+						</ansSIP:element>
+						<ansSIP:element name="coletivoEmpresarial" minOccurs="0">
+							<ansSIP:annotation>
+								<ansSIP:documentation>Contratação Coletivo Empresarial</ansSIP:documentation>
+							</ansSIP:annotation>
+							<ansSIP:complexType>
+								<ansSIP:sequence>
+									<ansSIP:element name="segmentacao" type="ct_segmentacao"/>
+								</ansSIP:sequence>
+							</ansSIP:complexType>
+						</ansSIP:element>
+						<ansSIP:element name="coletivoAdesao" minOccurs="0">
+							<ansSIP:annotation>
+								<ansSIP:documentation>Contratação Coletivo por Adesão</ansSIP:documentation>
+							</ansSIP:annotation>
+							<ansSIP:complexType>
+								<ansSIP:sequence>
+									<ansSIP:element name="segmentacao" type="ct_segmentacao"/>
+								</ansSIP:sequence>
+							</ansSIP:complexType>
+						</ansSIP:element>
+					</ansSIP:sequence>
+				</ansSIP:complexType>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_epilogo">
+		<ansSIP:sequence>
+			<ansSIP:element name="hash" type="st_hash"/>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_falhaNegocio">
+		<ansSIP:sequence>
+			<ansSIP:element name="falha" maxOccurs="unbounded">
+				<ansSIP:complexType>
+					<ansSIP:sequence>
+						<ansSIP:element name="codigoFalha" type="st_falhaNegocio">
+							<ansSIP:annotation>
+								<ansSIP:documentation>Código da falha</ansSIP:documentation>
+							</ansSIP:annotation>
+						</ansSIP:element>
+						<ansSIP:element name="descricaoFalha" type="st_descricaoFalha">
+							<ansSIP:annotation>
+								<ansSIP:documentation>Descrição da falha</ansSIP:documentation>
+							</ansSIP:annotation>
+						</ansSIP:element>
+					</ansSIP:sequence>
+				</ansSIP:complexType>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:group name="grupoConsultasMedicas">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO - A. CONSULTAS MÉDICAS</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!-- A. Consultas Médicas-->
+			<ansSIP:element name="consultasMedicas">
+				<ansSIP:annotation>
+					<ansSIP:documentation>A. Consultas Médicas</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEveBenDes">
+							<ansSIP:sequence>
+								<ansSIP:element name="consultasMedicasAmb">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1. Consultas médicas ambulatoriais</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEveBenDes">
+												<ansSIP:sequence>
+													<ansSIP:element name="alergiaImunologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.1 Alergia e Imunologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="angiologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.2 Angiologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="cardiologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.3 Cardiologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="cirurgiaGeral" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.4 Cirurgia geral</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="clinicaMedica" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.5 Clínica médica</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="dermatologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.6 Dermatologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="endocrinologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.7 Endocrinologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="gastroenterologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.8 Gastroenterologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="geriatria" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.9 Geriatria</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="ginecologiaObstetricia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.10 Ginecologia e Obstetrícia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="hematologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.11 Hematologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="mastologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.12 Mastologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="nefrologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.13 Nefrologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="neurocirurgia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.14 Neurocirurgia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="neurologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.15 Neurologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="oftalmologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.16 Oftalmologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="oncologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.17 Oncologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="otorrinolaringologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.18 Otorrinolaringologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="pediatria" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.19 Pediatria</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="proctologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.20 Proctologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="psiquiatria" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.21 Psiquiatria</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="reumatologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.22 Reumatologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="tisiopneumologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.23 Tisiopneumologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="traumatologiaOrtopedica" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.24 Traumatologia-ortopedia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="urologia" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.25 Urologia</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+								<ansSIP:element name="consultaMedProntSoc" type="ct_tipoEveBenDes">
+									<ansSIP:annotation>
+										<ansSIP:documentation>2. Consultas médicas em Pronto Socorro</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--1. Consultas médicas ambulatoriais-->
+			<!--1.1 Alergia e Imunologia-->
+			<!--1.2 Angiologia-->
+			<!--1.3 Cardiologia-->
+			<!--1.4 Cirurgia geral-->
+			<!--1.5 Clínica médica-->
+			<!--1.6 Dermatologia-->
+			<!--1.7 Endocrinologia-->
+			<!--1.8 Gastroenterologia-->
+			<!--1.9 Geriatria-->
+			<!--1.10 Ginecologia e Obstetrícia-->
+			<!--1.11 Hematologia-->
+			<!--1.12 Mastologia-->
+			<!--1.13 Nefrologia-->
+			<!--1.14 Neurocirurgia-->
+			<!--1.15 Neurologia-->
+			<!--1.16 Oftalmologia-->
+			<!--1.17 Oncologia-->
+			<!--1.18 Otorrinolaringologia-->
+			<!--1.19 Pediatria-->
+			<!--1.20 Proctologia-->
+			<!--1.21 Psiquiatria-->
+			<!--1.22 Reumatologia-->
+			<!--1.23 Tisiopneumologia-->
+			<!--1.24 Traumatologia-ortopedia-->
+			<!--1.25 Urologia-->
+			<!--2. Consultas médicas em Pronto Socorro-->
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoOutrosAtendAmbu">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO - B. OUTROS ATENDIMENTOS AMBULATORIAIS</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--B. OUTROS ATENDIMENTOS AMBULATORIAIS -->
+			<ansSIP:element name="outrosAtendAmb">
+				<ansSIP:annotation>
+					<ansSIP:documentation>B. OUTROS ATENDIMENTOS AMBULATORIAIS</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEveBenDes">
+							<ansSIP:sequence>
+								<ansSIP:element name="consultaSessaoFisio" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1. Consultas/sessões com Fisioterapeuta</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="consultaSessaoFono" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>2. Consultas/sessões com Fonoaudiólogo</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="consultaSessaoNutri" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>3. Consultas/sessões com Nutricionista</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="consultaSessaoTerap" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>4. Consultas/sessões com Terapeuta Ocupacional</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="consultaSessaoPsico" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>5. Consultas/sessões com Psicólogo</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--1. Consultas/sessões com Fisioterapeuta -->
+			<!--2. Consultas/sessões com Fonoaudiólogo -->
+			<!-- 3. Consultas/sessões com Nutricionista-->
+			<!--4. Consultas/sessões com Terapeuta Ocupacional -->
+			<!-- 5. Consultas/sessões com Psicólogo-->
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoExames">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO - C. EXAMES</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--C. EXAMES -->
+			<ansSIP:element name="exames">
+				<ansSIP:annotation>
+					<ansSIP:documentation>C. EXAMES</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEveBenDes">
+							<ansSIP:sequence>
+								<ansSIP:element name="ressonanciaMagnet" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1. Ressonância magnética</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="tomografiaComputa" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>2. Tomografia computadorizada</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="procedDiagnCitopat" type="ct_tipoEveBen">
+									<ansSIP:annotation>
+										<ansSIP:documentation>3. Procedimento diagnóstico em citopatologia cérvico-vaginal oncótica em mulheres de 25 a 59 anos</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="densitometriaOssea" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>4. Densitometria óssea _ qualquer segmento</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="ecodopplerTranstora" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>5. Ecodopplercardiograma transtorácico</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="broncoscopiabiopsia" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>6. Broncoscopia com ou sem biopsia</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="endoscopiaDigestiva" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>7. Endoscopia digestiva alta</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="colonoscopia" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>8. Colonoscopia</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="holter24h" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>9. Holter de 24 horas</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="mamografiaConvDig">
+									<ansSIP:annotation>
+										<ansSIP:documentation>10. Mamografia convencional e digital</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEve">
+												<ansSIP:sequence>
+													<ansSIP:element name="mamografia50a69">
+														<ansSIP:annotation>
+															<ansSIP:documentation>10.1 Mamografia em mulheres de 50 a 69 anos</ansSIP:documentation>
+														</ansSIP:annotation>
+														<ansSIP:complexType>
+															<ansSIP:complexContent>
+																<ansSIP:extension base="ct_tipoEveBen"/>
+															</ansSIP:complexContent>
+														</ansSIP:complexType>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+								<ansSIP:element name="cintilografiaMiocard" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>11. Cintilografia miocárdica</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="cintilografiaRenal" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>12. Cintilografia renal dinâmica</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="hemoglobinaGlicada" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>13. Hemoglobina glicada</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="pesqSangueOculto" type="ct_tipoEveBen">
+									<ansSIP:annotation>
+										<ansSIP:documentation>14. Pesquisa de sangue oculto nas fezes fezes em pessoas de 50 a 69 anos</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="radiografia" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>15. Radiografia</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="testeErgometrico" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>16. Teste ergométrico</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="ultraSonAbdoTotal" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>17. Ultra-sonografia diagnóstica de abdome total</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="ultraSonAbdoInfer" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>18. Ultra-sonografia diagnóstica de abdome inferior</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="ultraSonAbdoSuper" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>19. Ultra-sonografia diagnóstica de abdome superior </ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="ultraSonObstMorfo" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>20. Ultra-sonografia obstétrica morfológica</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--1. Ressonância magnética -->
+			<!--2. Tomografia computadorizada -->
+			<!--3. Procedimento diagnóstico em citopatologia cérvico-vaginal oncótica em mulheres de 25 a 59 anos -->
+			<!--4. Densitometria óssea _ qualquer segmento -->
+			<!--5. Ecodopplercardiograma transtorácico -->
+			<!--6. Broncoscopia com ou sem biopsia -->
+			<!--7. Endoscopia digestiva alta -->
+			<!--8. Colonoscopia -->
+			<!--9. Holter de 24 horas -->
+			<!--10. Mamografia convencional e digital -->
+			<!--10.1 Mamografia em mulheres de 50 a 69 anos -->
+			<!--11. Cintilografia miocárdica -->
+			<!--12. Cintilografia renal dinâmica -->
+			<!--13. Hemoglobina glicada -->
+			<!--14. Pesquisa de sangue oculto nas fezes -->
+			<!--15. Radiografia -->
+			<!--16. Teste ergométrico -->
+			<!-- 17. Ultra-sonografia diagnóstica de abdome total-->
+			<!-- 18. Ultra-sonografia diagnóstica de abdome inferior-->
+			<!--19. Ultra-sonografia diagnóstica de abdome superior -->
+			<!-- 20. Ultra-sonografia obstétrica morfológica-->
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoTerapias">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO - D. TERAPIAS</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--D. TERAPIAS-->
+			<ansSIP:element name="terapias">
+				<ansSIP:annotation>
+					<ansSIP:documentation>D. TERAPIAS</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEveBenDes">
+							<ansSIP:sequence>
+								<ansSIP:element name="transfusaoAmbulatorial" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1. Transfusão ambulatorial</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="quimioSistemica" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>2. Quimioterapia sistêmica</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="radioterapiaMegavolt" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>3. Radioterapia megavoltagem</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="hemodialiseAguda" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>4. Hemodiálise aguda</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="hemodialiseCronica" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>5. Hemodiálise crônica</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="implanteDispIntrauterino" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>6. Implante de dispositivo intrauterino _ DIU</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--1. Transfusão ambulatorial-->
+			<!--2. Quimioterapia sistêmica-->
+			<!--3. Radioterapia megavoltagem-->
+			<!--4. Hemodiálise aguda-->
+			<!--5. Hemodiálise crônica-->
+			<!--6. Implante de dispositivo intrauterino _ DIU-->
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoInternacoes">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO - E. INTERNAÇÕES</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--E. INTERNAÇÕES-->
+			<ansSIP:element name="internacoes">
+				<ansSIP:annotation>
+					<ansSIP:documentation>E. INTERNAÇÕES</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEveBenDes">
+							<ansSIP:sequence>
+								<ansSIP:element name="tipoInternacao">
+									<ansSIP:annotation>
+										<ansSIP:documentation>Tipo de Internação</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEve">
+												<ansSIP:sequence>
+													<ansSIP:element name="clinica">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1. Clínica</ansSIP:documentation>
+														</ansSIP:annotation>
+														<ansSIP:complexType>
+															<ansSIP:complexContent>
+																<ansSIP:extension base="ct_tipoEve"/>
+															</ansSIP:complexContent>
+														</ansSIP:complexType>
+													</ansSIP:element>
+													<ansSIP:element name="cirurgica">
+														<ansSIP:annotation>
+															<ansSIP:documentation>2. Cirúrgica</ansSIP:documentation>
+														</ansSIP:annotation>
+														<ansSIP:complexType>
+															<ansSIP:complexContent>
+																<ansSIP:extension base="ct_tipoEve">
+																	<ansSIP:sequence>
+																		<ansSIP:element name="cirurgiaBariatrica" type="ct_tipoEve">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>2.1 Cirurgia bariátrica</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																		<ansSIP:element name="laqueaduraTubaria" type="ct_tipoEve">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>2.2 Laqueadura tubária</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																		<ansSIP:element name="vasectomia" type="ct_tipoEve">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>2.3 Vasectomia</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																		<ansSIP:element name="fraturaFemur60" type="ct_tipoEveBen">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>2.4 Fratura de fêmur (60 anos ou mais)</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																		<ansSIP:element name="revisaoArtroplastia" type="ct_tipoEve">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>2.5 Revisão de artroplastia</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																		<ansSIP:element name="implanteCdi" type="ct_tipoEve">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>2.6 Implante de CDI (cardio desfibrilador implantável)</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																		<ansSIP:element name="implantacaoMarcap" type="ct_tipoEve">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>2.7 Implantação de marcapasso</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																	</ansSIP:sequence>
+																</ansSIP:extension>
+															</ansSIP:complexContent>
+														</ansSIP:complexType>
+													</ansSIP:element>
+													<ansSIP:element name="pediatrica">
+														<ansSIP:annotation>
+															<ansSIP:documentation>4. Pediátrica</ansSIP:documentation>
+														</ansSIP:annotation>
+														<ansSIP:complexType>
+															<ansSIP:complexContent>
+																<ansSIP:extension base="ct_tipoEve">
+																	<ansSIP:sequence>
+																		<ansSIP:element name="internacaoRespira" type="ct_tipoEveBen">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>4.1. Internação de 0 a 5 anos de idade por doenças respiratórias</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																		<ansSIP:element name="internacaoUtiNeo">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>4.2 Internação em UTI no período neonatal</ansSIP:documentation>
+																			</ansSIP:annotation>
+																			<ansSIP:complexType>
+																				<ansSIP:complexContent>
+																					<ansSIP:extension base="ct_tipoEve">
+																						<ansSIP:sequence>
+																							<ansSIP:element name="internacoesUtiNeo48" type="ct_tipoEve">
+																								<ansSIP:annotation>
+																									<ansSIP:documentation>4.2.1 Internações em UTI no período neonatal por até 48 horas</ansSIP:documentation>
+																								</ansSIP:annotation>
+																							</ansSIP:element>
+																						</ansSIP:sequence>
+																					</ansSIP:extension>
+																				</ansSIP:complexContent>
+																			</ansSIP:complexType>
+																		</ansSIP:element>
+																	</ansSIP:sequence>
+																</ansSIP:extension>
+															</ansSIP:complexContent>
+														</ansSIP:complexType>
+													</ansSIP:element>
+													<ansSIP:element name="psiquiatrica" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>5. Psiquiátrica</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="regimeInternacao">
+														<ansSIP:annotation>
+															<ansSIP:documentation>Regime de internação</ansSIP:documentation>
+														</ansSIP:annotation>
+														<ansSIP:complexType>
+															<ansSIP:complexContent>
+																<ansSIP:extension base="ct_tipoEve">
+																	<ansSIP:sequence>
+																		<ansSIP:element name="hospitalar" type="ct_tipoEveBen">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>1. Hospitalar</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																		<ansSIP:element name="hospitalDia">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>2. Hospital-dia</ansSIP:documentation>
+																			</ansSIP:annotation>
+																			<ansSIP:complexType>
+																				<ansSIP:complexContent>
+																					<ansSIP:extension base="ct_tipoEveBen">
+																						<ansSIP:sequence>
+																							<ansSIP:element name="hospitalSaudeMental" type="ct_tipoEve">
+																								<ansSIP:annotation>
+																									<ansSIP:documentation>2.1 Hospital-dia para saúde mental</ansSIP:documentation>
+																								</ansSIP:annotation>
+																							</ansSIP:element>
+																						</ansSIP:sequence>
+																					</ansSIP:extension>
+																				</ansSIP:complexContent>
+																			</ansSIP:complexType>
+																		</ansSIP:element>
+																		<ansSIP:element name="domiciliar" type="ct_tipoEveBen">
+																			<ansSIP:annotation>
+																				<ansSIP:documentation>3. Domiciliar</ansSIP:documentation>
+																			</ansSIP:annotation>
+																		</ansSIP:element>
+																	</ansSIP:sequence>
+																</ansSIP:extension>
+															</ansSIP:complexContent>
+														</ansSIP:complexType>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--Tipo de Internação-->
+			<!--1. Clínica-->
+			<!--2. Cirúrgica-->
+			<!--2.1 Cirurgia bariátrica-->
+			<!--2.2 Laqueadura tubária-->
+			<!--2.3 Vasectomia-->
+			<!--2.4 Fratura de fêmur (60 anos ou mais)-->
+			<!--2.5 Revisão de artroplastia-->
+			<!--2.6 Implante de CDI (cardio desfibrilador implantável)-->
+			<!--2.7 Implantação de marcapasso-->
+			<!--4. Pediátrica-->
+			<!--4.1. Internação de 0 a 5 anos de idade por doenças respiratórias-->
+			<!--4.2 Internação em UTI no período neonatal-->
+			<!--4.2.1 Internações em UTI no período neonatal por até 48 horas-->
+			<!--5. Psiquiátrica-->
+			<!--Regime de internação-->
+			<!--1. Hospitalar-->
+			<!--2. Hospital-dia-->
+			<!--2.1 Hospital-dia para saúde mental-->
+			<!--3. Domiciliar-->
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoInterObstetricas">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Grupo de ítens - Obstétrica</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--. Obstétrica-->
+			<ansSIP:element name="obstetrica" type="ct_tipoEve">
+				<ansSIP:annotation>
+					<ansSIP:documentation>3. Obstétrica</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoParto">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Grupo de ítens - Parto</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--3.1 Parto normal-->
+			<ansSIP:element name="partoNormal" type="ct_tipoEve">
+				<ansSIP:annotation>
+					<ansSIP:documentation>3.1 Parto normal</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<!--3.2 Parto cesáreo-->
+			<ansSIP:element name="partoCesareo" type="ct_tipoEve">
+				<ansSIP:annotation>
+					<ansSIP:documentation>3.2 Parto cesáreo</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoCausaInterna">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO -  F. CAUSAS SELECIONADAS DE INTERNAÇÃO</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--1. Neoplasias-->
+			<ansSIP:element name="neoplasias">
+				<ansSIP:annotation>
+					<ansSIP:documentation>1. Neoplasias</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEve">
+							<ansSIP:sequence>
+								<ansSIP:element name="cancerMamaFem">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1.1 Câncer de mama feminino</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEve">
+												<ansSIP:sequence>
+													<ansSIP:element name="tratCirurgCancerMam" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.1.1 Tratamento cirúrgico de câncer de mama feminino</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+								<ansSIP:element name="cancerColoUtero">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1.2 Câncer de colo de útero</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEve">
+												<ansSIP:sequence>
+													<ansSIP:element name="tratCirurgCancerColo" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.2.1 Tratamento cirúrgico de câncer de colo de útero</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+								<ansSIP:element name="cancerColonReto">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1.3 Câncer de cólon e reto</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEve">
+												<ansSIP:sequence>
+													<ansSIP:element name="tratCirurgCancerColoReto" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.3.1 Tratamento cirúrgico de câncer de cólon e reto</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+								<ansSIP:element name="cancerProstata">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1.4 Câncer de próstata</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEve">
+												<ansSIP:sequence>
+													<ansSIP:element name="tratCirurgCancerProst" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>1.4.1 Tratamento cirúrgico de câncer de próstata</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--1.1 Câncer de mama feminino-->
+			<!--1.1.1 Tratamento cirúrgico de câncer de mama feminino-->
+			<!--1.2 Câncer de colo de útero-->
+			<!--1.2.1 Tratamento cirúrgico de câncer de colo de útero-->
+			<!--1.3 Câncer de cólon e reto-->
+			<!--1.3.1 Tratamento cirúrgico de câncer de cólon e reto-->
+			<!--1.4 Câncer de próstata-->
+			<!--1.4.1 Tratamento cirúrgico de câncer de próstata-->
+			<!--2. Diabetes mellitus-->
+			<ansSIP:element name="diabetesMellitus" type="ct_tipoEve">
+				<ansSIP:annotation>
+					<ansSIP:documentation>2. Diabetes mellitus</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<!--3. Doenças do aparelho circulatório-->
+			<ansSIP:element name="doencasAparelhoCirc">
+				<ansSIP:annotation>
+					<ansSIP:documentation>3. Doenças do aparelho circulatório</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEve">
+							<ansSIP:sequence>
+								<ansSIP:element name="infartoAgudoMiocardio" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>3.1 Infarto agudo do miocárdio</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="doencasHipertensivas" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>3.2 Doenças hipertensivas</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="insuficienciaCardCong" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>3.3 Insuficiência cardíaca congestiva</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="doencasCerebrovasc">
+									<ansSIP:annotation>
+										<ansSIP:documentation>3.4 Doenças cerebrovasculares</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEve">
+												<ansSIP:sequence>
+													<ansSIP:element name="acidenteVascularCere" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>3.4.1 Acidente vascular cerebral</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--3.1 Infarto agudo do miocárdio-->
+			<!--3.2 Doenças hipertensivas-->
+			<!--3.3 Insuficiência cardíaca congestiva-->
+			<!--3.4 Doenças cerebrovasculares-->
+			<!--3.4.1 Acidente vascular cerebral-->
+			<!--4. Doenças do aparelho respiratório-->
+			<ansSIP:element name="doencasAparelhoResp">
+				<ansSIP:annotation>
+					<ansSIP:documentation>4. Doenças do aparelho respiratório</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEve">
+							<ansSIP:sequence>
+								<ansSIP:element name="doencaPulmoObstrCron" type="ct_tipoEve">
+									<ansSIP:annotation>
+										<ansSIP:documentation>4.1 Doença pulmonar obstrutiva crônica</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--4.1 Doença pulmonar obstrutiva crônica-->
+			<!--5. Causas externas-->
+			<ansSIP:element name="causasExternas" type="ct_tipoEve">
+				<ansSIP:annotation>
+					<ansSIP:documentation>5. Causas externas</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoNascidoVivo">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO - G. NASCIDO VIVO</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--Nascido Vivo-->
+			<ansSIP:element name="nascidoVivo" type="ct_tipoEve">
+				<ansSIP:annotation>
+					<ansSIP:documentation>G. NASCIDO VIVO</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoDemDespMedHosp">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO -  H. DEMAIS DESPESAS MÉDICO- HOSPITALARES</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--Nascido Vivo-->
+			<ansSIP:element name="demaisDespMedHosp" type="ct_tipoDes">
+				<ansSIP:annotation>
+					<ansSIP:documentation>H. DEMAIS DESPESAS MÉDICO-HOSPITALARES</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:group name="grupoProcOdonto">
+		<ansSIP:annotation>
+			<ansSIP:documentation>GRUPO - I. PROCEDIMENTOS ODONTOLÓGICOS</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<!--I. PROCEDIMENTOS ODONTOLÓGICOS-->
+			<ansSIP:element name="procedimentosOdonto">
+				<ansSIP:annotation>
+					<ansSIP:documentation>I. PROCEDIMENTOS ODONTOLÓGICOS</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:complexContent>
+						<ansSIP:extension base="ct_tipoEveBenDes">
+							<ansSIP:sequence>
+								<ansSIP:element name="consultasOdontoInic" type="ct_tipoEveBenDes">
+									<ansSIP:annotation>
+										<ansSIP:documentation>1. Consultas odontológicas iniciais</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="examesRadiograficos" type="ct_tipoEveBen">
+									<ansSIP:annotation>
+										<ansSIP:documentation>2. Exames radiográficos</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="procedimentosPrevent">
+									<ansSIP:annotation>
+										<ansSIP:documentation>3. Procedimentos preventivos</ansSIP:documentation>
+									</ansSIP:annotation>
+									<ansSIP:complexType>
+										<ansSIP:complexContent>
+											<ansSIP:extension base="ct_tipoEveBenDes">
+												<ansSIP:sequence>
+													<ansSIP:element name="atividadeEduIndividual" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>3.1 Atividade educativa individual</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="aplicTopProfFluorHemi" type="ct_tipoEve">
+														<ansSIP:annotation>
+															<ansSIP:documentation>3.2 Aplicação tópica profissional de flúor por hemi-arcada</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+													<ansSIP:element name="selanteElemDentario" type="ct_tipoEveBen">
+														<ansSIP:annotation>
+															<ansSIP:documentation>3.3 Selante por elemento dentário (menores de 12 anos)</ansSIP:documentation>
+														</ansSIP:annotation>
+													</ansSIP:element>
+												</ansSIP:sequence>
+											</ansSIP:extension>
+										</ansSIP:complexContent>
+									</ansSIP:complexType>
+								</ansSIP:element>
+								<ansSIP:element name="raspSupraGengHemi" type="ct_tipoEveBen">
+									<ansSIP:annotation>
+										<ansSIP:documentation>4. Raspagem supra-gengival por hemi-arcada (12 anos ou mais)</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="restauraDenteDeciduo" type="ct_tipoEveBen">
+									<ansSIP:annotation>
+										<ansSIP:documentation>5. Restauração em dentes decíduos por elemento (menores de 12 anos)</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="restauraDentePerma" type="ct_tipoEveBen">
+									<ansSIP:annotation>
+										<ansSIP:documentation>6. Restauração em dentes permanentes por elemento (12 anos ou mais)</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="exodontiasSimplesPer" type="ct_tipoEveBenDes">
+									<ansSIP:annotation>
+										<ansSIP:documentation>7. Exodontias simples de permanentes (12 anos ou mais)</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="trataEndoConclDentesD" type="ct_tipoEveBen">
+									<ansSIP:annotation>
+										<ansSIP:documentation>8. Tratamento endodôntico concluído em dentes decíduos por elemento (menores de 12 anos)</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="trataEndoConclDentesP" type="ct_tipoEveBen">
+									<ansSIP:annotation>
+										<ansSIP:documentation>9. Tratamento endodôntico concluído em dentes permanentes por elemento (12 anos ou mais)</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="protesesOdontologicas" type="ct_tipoEveBenDes">
+									<ansSIP:annotation>
+										<ansSIP:documentation>10. Próteses odontológicas</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+								<ansSIP:element name="protesesOdontoUnitarias" type="ct_tipoEveDes">
+									<ansSIP:annotation>
+										<ansSIP:documentation>11. Próteses odontológicas unitárias (Coroa Total e Restauração Metálica Fundida)</ansSIP:documentation>
+									</ansSIP:annotation>
+								</ansSIP:element>
+							</ansSIP:sequence>
+						</ansSIP:extension>
+					</ansSIP:complexContent>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<!--1. Consultas odontológicas iniciais-->
+			<!--2. Exames radiográficos-->
+			<!--3. Procedimentos preventivos-->
+			<!--3.1 Atividade educativa individual-->
+			<!--3.2 Aplicação tópica profissional de flúor por hemi-arcada-->
+			<!--3.3 Selante por elemento dentário (menores de 12 anos)-->
+			<!--4. Raspagem supra-gengival por hemi-arcada (12 anos ou mais)-->
+			<!--5. Restauração em dentes decíduos por elemento (menores de 12 anos)-->
+			<!--6. Restauração em dentes permanentes por elemento (12 anos ou mais)-->
+			<!--7. Exodontias simples de permanentes (12 anos ou mais)-->
+			<!--8. Tratamento endodôntico concluído em dentes decíduos por elemento (menores de 12 anos)-->
+			<!--9. Tratamento endodôntico concluído em dentes permanentes por elemento (12 anos ou mais)-->
+			<!--10. Próteses odontológicas-->
+			<!--11. Próteses odontológicas unitárias (Coroa Total e Restauração Metálica Fundida)-->
+		</ansSIP:sequence>
+	</ansSIP:group>
+	<ansSIP:complexType name="ct_identificacaoSoftwareGerador">
+		<ansSIP:sequence>
+			<ansSIP:element name="nomeAplicativo" type="st_nome">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Nome do aplicativo gerador</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="versaoAplicativo" type="st_nome">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Versão do aplicativo gerador</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="fabricanteAplicativo" type="st_nome">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Fabricante do aplicativo gerador</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_identificacaoTransacao">
+		<ansSIP:sequence>
+			<ansSIP:element name="tipoTransacao" type="st_tipoTransacao">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Identifica o tipo de transação</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="sequencialTransacao" type="st_sequencialTransacao">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Sequencial identificador da transação.</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="dataHoraRegistroTransacao" type="st_dataHora">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Data e hora do registro da transação</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_origemDestino">
+		<ansSIP:choice>
+			<ansSIP:element name="cnpj" type="st_CNPJ">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Campo fixo com CNPJ da ANS</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="registroAns" type="st_registroANS">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Registro da operadora na ANS</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+		</ansSIP:choice>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_quadroHospitalar">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Quadro Hospitalar</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="dataTrimestreOcorrencia" type="ct_dataTrimestreOcorrencia"/>
+			<ansSIP:element name="uf" type="st_uf">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Unidade Federativa</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="ct_quadroHospInternacoes">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoInternacoes"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="interObstetricas">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoInterObstetricas"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="causaInterna">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoCausaInterna"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="demDespMedHosp">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoDemDespMedHosp"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_quadroAmbulatorial">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Quadro Ambulatorial</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="dataTrimestreOcorrencia" type="ct_dataTrimestreOcorrencia"/>
+			<ansSIP:element name="uf" type="st_uf">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Unidade Federativa</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="itensConsultasMedicas">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoConsultasMedicas"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="itensOutrosAtendAmbu">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoOutrosAtendAmbu"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="itensExames">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoExames"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="itensTerapias">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoTerapias"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="itensDemDespMedHosp">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoDemDespMedHosp"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_quadroHospitalarObstetricia">
+		<ansSIP:annotation>
+			<ansSIP:documentation> Quadro Hospitalar com Obstetricia</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="dataTrimestreOcorrencia" type="ct_dataTrimestreOcorrencia"/>
+			<ansSIP:element name="uf" type="st_uf">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Unidade Federativa</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="ct_quadroHospObstInternacoes">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoInternacoes"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="interObstetricas">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoInterObstetricas"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="parto">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoParto"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="causaInterna">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoCausaInterna"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="nascidoVivo">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoNascidoVivo"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="demDespMedHosp">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoDemDespMedHosp"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_quadroOdontologico">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Quadro Procedimentos odontológicos</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="dataTrimestreOcorrencia" type="ct_dataTrimestreOcorrencia"/>
+			<ansSIP:element name="uf" type="st_uf">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Unidade Federativa</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="procOdonto">
+				<ansSIP:complexType>
+					<ansSIP:group ref="grupoProcOdonto"/>
+				</ansSIP:complexType>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_reciboSip">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Recibo SIP</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="dataHoraRecebimento" type="st_dataHora">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Data e hora do recebimento da declaração na ANS</ansSIP:documentation>
+				</ansSIP:annotation>
+			</ansSIP:element>
+			<ansSIP:element name="numeroProtocolo">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Número do protocolo de recebimento da declaração</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:simpleType>
+					<ansSIP:restriction base="st_numeroProtocolo">
+						<ansSIP:minLength value="1"/>
+					</ansSIP:restriction>
+				</ansSIP:simpleType>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_segmentacao">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Segmentação</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="ambulatorial" minOccurs="0">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Segmentação Ambulatorial</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:sequence>
+						<ansSIP:element name="quadro" type="ct_quadroAmbulatorial" maxOccurs="unbounded"/>
+					</ansSIP:sequence>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="hospitalar" minOccurs="0">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Segmentação Hospitalar sem obstetrícia</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:sequence>
+						<ansSIP:element name="quadro" type="ct_quadroHospitalar" maxOccurs="unbounded"/>
+					</ansSIP:sequence>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="hospitalarObstetricia" minOccurs="0">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Segmentação Hospitalar com obstetrícia</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:sequence>
+						<ansSIP:element name="quadro" type="ct_quadroHospitalarObstetricia" maxOccurs="unbounded"/>
+					</ansSIP:sequence>
+				</ansSIP:complexType>
+			</ansSIP:element>
+			<ansSIP:element name="odontologico" minOccurs="0">
+				<ansSIP:annotation>
+					<ansSIP:documentation>Segmentação Odontologico</ansSIP:documentation>
+				</ansSIP:annotation>
+				<ansSIP:complexType>
+					<ansSIP:sequence>
+						<ansSIP:element name="quadro" type="ct_quadroOdontologico" maxOccurs="unbounded"/>
+					</ansSIP:sequence>
+				</ansSIP:complexType>
+			</ansSIP:element>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_sipOperadoraParaAns">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Mensagens so sistema SIP enviadas pela operadora</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:choice>
+			<ansSIP:element name="envioSip" type="ct_envioSip"/>
+		</ansSIP:choice>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_sipAnsParaOperadora">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Mensagens so sistema SIP enviadas pela ANS</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:choice>
+			<ansSIP:element name="reciboSip" type="ct_reciboSip"/>
+		</ansSIP:choice>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_tipoEveBenDes">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Tipo de Ítem com 3 valores: despesas, eventos e beneficiários </ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="eventos" type="st_evento"/>
+			<ansSIP:element name="beneficiarios" type="st_beneficiario"/>
+			<ansSIP:element name="despesas" type="st_despesa"/>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_tipoEveBen">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Tipo de Ítem com 2 valores:  eventos e beneficiários </ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="eventos" type="st_evento"/>
+			<ansSIP:element name="beneficiarios" type="st_beneficiario"/>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_tipoEveDes">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Tipo de Ítem com 2 valores:  eventos e despesas </ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="eventos" type="st_evento"/>
+			<ansSIP:element name="despesas" type="st_despesa"/>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_tipoBenDes">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Tipo de Ítem com 2 valores: beneficiários e despesas  </ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="beneficiarios" type="st_beneficiario"/>
+			<ansSIP:element name="despesas" type="st_despesa"/>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_tipoEve">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Tipo de Ítem com 1 valor: eventos </ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="eventos" type="st_evento"/>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+	<ansSIP:complexType name="ct_tipoDes">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Tipo de Ítem com 1 valor: despesas</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:sequence>
+			<ansSIP:element name="despesas" type="st_despesa"/>
+		</ansSIP:sequence>
+	</ansSIP:complexType>
+</ansSIP:schema>

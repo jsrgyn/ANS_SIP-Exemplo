@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited by michel.saddock - ANS -->
+<ansSIP:schema xmlns:ansSIP="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<ansSIP:simpleType name="st_anoReconhecimento">
+		<ansSIP:restriction base="ansSIP:integer">
+			<ansSIP:totalDigits value="4"/>
+			<ansSIP:minInclusive value="2010"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_anoOcorrencia">
+		<ansSIP:restriction base="ansSIP:integer">
+			<ansSIP:totalDigits value="4"/>
+			<ansSIP:minInclusive value="2002"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_beneficiario">
+		<ansSIP:restriction base="ansSIP:nonNegativeInteger">
+			<ansSIP:totalDigits value="7"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_CNPJ">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:pattern value="[0-9]{14}"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_dataHora">
+		<ansSIP:restriction base="ansSIP:dateTime"/>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_descricaoFalha">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:maxLength value="500"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_despesa">
+		<ansSIP:restriction base="st_floatPositivo"/>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_diaSelecao">
+		<ansSIP:restriction base="ansSIP:integer">
+			<ansSIP:enumeration value="01"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_evento">
+		<ansSIP:restriction base="ansSIP:nonNegativeInteger">
+			<ansSIP:totalDigits value="8"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_fabricanteAplicativo">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:minLength value="2"/>
+			<ansSIP:whiteSpace value="collapse"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_falhaNegocio">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:length value="4"/>
+			<ansSIP:enumeration value="1000"/>
+			<ansSIP:enumeration value="1001"/>
+			<ansSIP:enumeration value="1002"/>
+			<ansSIP:enumeration value="1003"/>
+			<ansSIP:enumeration value="1004"/>
+			<ansSIP:enumeration value="1005"/>
+			<ansSIP:enumeration value="1006"/>
+			<ansSIP:enumeration value="1007"/>
+			<ansSIP:enumeration value="1008"/>
+			<ansSIP:enumeration value="1009"/>
+			<ansSIP:enumeration value="1010"/>
+			<!-- 1000	Erro não identificado -->
+			<!-- 1001	Mensagem eletrônica fora do padrão SIP -->
+			<!-- 1002	Não foi possível validar o arquivo XML -->
+			<!-- 1003	Remetente não identificado -->
+			<!-- 1004	Destinatário não identificado -->
+			<!-- 1005	Mensagem inconsistente ou incompleta -->
+			<!-- 1007	Envio de mensagem não foi finalizado -->
+			<!-- 1009	Recebimento de mensagem não finalizado -->
+			<!-- 1010	Código Hash inválido. Mensagem pode estar corrompida. -->
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_floatPositivo">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:maxLength value="13"/>
+			<ansSIP:pattern value="([0-9])+,([0-9][0-9])"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_hash">
+		<ansSIP:restriction base="ansSIP:string"/>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_mesSelecao">
+		<ansSIP:restriction base="ansSIP:integer">
+			<ansSIP:enumeration value="01"/>
+			<ansSIP:enumeration value="04"/>
+			<ansSIP:enumeration value="07"/>
+			<ansSIP:enumeration value="10"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_nome">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:maxLength value="70"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_numeroInteiro">
+		<ansSIP:restriction base="ansSIP:integer"/>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_numeroProtocolo">
+		<ansSIP:restriction base="ansSIP:string"/>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_registroANS">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:maxLength value="6"/>
+			<ansSIP:pattern value="[0-9]{6}"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_sequencialTransacao">
+		<ansSIP:restriction base="st_numeroInteiro">
+			<ansSIP:totalDigits value="12"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_tipoTransacao">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:enumeration value="ENVIO_SIP"/>
+			<ansSIP:enumeration value="RECIBO_SIP"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_uf">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:enumeration value="NC"/>
+			<ansSIP:enumeration value="AC"/>
+			<ansSIP:enumeration value="AL"/>
+			<ansSIP:enumeration value="AM"/>
+			<ansSIP:enumeration value="AP"/>
+			<ansSIP:enumeration value="BA"/>
+			<ansSIP:enumeration value="CE"/>
+			<ansSIP:enumeration value="DF"/>
+			<ansSIP:enumeration value="ES"/>
+			<ansSIP:enumeration value="GO"/>
+			<ansSIP:enumeration value="MA"/>
+			<ansSIP:enumeration value="MG"/>
+			<ansSIP:enumeration value="MS"/>
+			<ansSIP:enumeration value="MT"/>
+			<ansSIP:enumeration value="PA"/>
+			<ansSIP:enumeration value="PB"/>
+			<ansSIP:enumeration value="PE"/>
+			<ansSIP:enumeration value="PI"/>
+			<ansSIP:enumeration value="PR"/>
+			<ansSIP:enumeration value="RJ"/>
+			<ansSIP:enumeration value="RN"/>
+			<ansSIP:enumeration value="RO"/>
+			<ansSIP:enumeration value="RR"/>
+			<ansSIP:enumeration value="RS"/>
+			<ansSIP:enumeration value="SC"/>
+			<ansSIP:enumeration value="SE"/>
+			<ansSIP:enumeration value="SP"/>
+			<ansSIP:enumeration value="TO"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+	<ansSIP:simpleType name="st_versao">
+		<ansSIP:restriction base="ansSIP:string">
+			<ansSIP:enumeration value="1.02"/>
+		</ansSIP:restriction>
+	</ansSIP:simpleType>
+</ansSIP:schema>

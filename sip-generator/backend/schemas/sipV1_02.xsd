@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ansSIP:schema xmlns:ansSIP="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified" attributeFormDefault="unqualified" xsi:noNamespaceSchemaLocation="http://www.ans.gov.br/padroes/sip/schemas">
+	<!-- -->
+	<!-- Inclusão do arquivo simpleType-->
+	<ansSIP:include schemaLocation="sipSimpleTypeV1_02.xsd"/>
+	<!-- -->
+	<!-- Inclusão do arquivo complexType-->
+	<ansSIP:include schemaLocation="sipComplexTypeV1_02.xsd"/>
+	<!-- -->
+	<!-- -->
+	<ansSIP:element name="mensagemSIP">
+		<ansSIP:annotation>
+			<ansSIP:documentation>Estrutura do formulário</ansSIP:documentation>
+		</ansSIP:annotation>
+		<ansSIP:complexType>
+			<ansSIP:sequence>
+				<ansSIP:element name="cabecalho" type="ct_cabecalhoTransacao"/>
+				<ansSIP:element name="mensagem">
+					<ansSIP:complexType>
+						<ansSIP:choice>
+							<ansSIP:element name="operadoraParaANS" minOccurs="0">
+								<ansSIP:complexType>
+									<ansSIP:choice>
+										<ansSIP:element name="sipOperadoraParaAns" type="ct_sipOperadoraParaAns"/>
+									</ansSIP:choice>
+								</ansSIP:complexType>
+							</ansSIP:element>
+							<ansSIP:element name="ansParaOperadora" minOccurs="0">
+								<ansSIP:complexType>
+									<ansSIP:choice>
+										<ansSIP:element name="sipAnsParaOperadora" type="ct_sipAnsParaOperadora"/>
+									</ansSIP:choice>
+								</ansSIP:complexType>
+							</ansSIP:element>
+						</ansSIP:choice>
+					</ansSIP:complexType>
+				</ansSIP:element>
+				<ansSIP:element name="epilogo" type="ct_epilogo"/>
+			</ansSIP:sequence>
+		</ansSIP:complexType>
+	</ansSIP:element>
+</ansSIP:schema>

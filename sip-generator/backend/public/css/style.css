@@ -1,0 +1,102 @@
+body {
+  font-family: sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+h2 {
+  color: #0056b3;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+fieldset {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+legend {
+  padding: 0 10px;
+  font-weight: bold;
+  color: #0056b3;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #0056b3;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #004494;
+}
+
+#validate-btn {
+  background-color: #6c757d;
+}
+
+#validate-btn:hover {
+  background-color: #5a6268;
+}
+
+.xml-preview {
+  margin-top: 20px;
+}
+
+pre {
+  background: #eee;
+  padding: 15px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+#download-btn {
+  background-color: #28a745;
+}
+
+#download-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANS SIP XML Generator</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Gerador de SIP XML (ANS RN551)</h1>
+    <form id="sip-form">
+      <!-- Operator Identification Section -->
+      <fieldset>
+        <legend>Identificação da Operadora</legend>
+        <div>
+          <label for="cnpj">CNPJ (*)</label>
+          <input type="text" id="cnpj" name="cnpj" required>
+        </div>
+        <div>
+          <label for="nomeOperadora">Nome da Operadora (*)</label>
+          <input type="text" id="nomeOperadora" name="nomeOperadora" required>
+        </div>
+        <div>
+          <label for="registroANS">Registro ANS (*)</label>
+          <input type="text" id="registroANS" name="registroANS" required>
+        </div>
+      </fieldset>
+
+      <!-- Product Data Section (Example) -->
+      <fieldset>
+        <legend>Dados do Produto</legend>
+        <div>
+          <label for="codigoProduto">Código do Produto (*)</label>
+          <input type="text" id="codigoProduto" name="produto.codigo" required>
+        </div>
+        <div>
+          <label for="nomeComercial">Nome Comercial (*)</label>
+          <input type="text" id="nomeComercial" name="produto.nomeComercial" required>
+        </div>
+        <div>
+          <label for="dataRegistro">Data de Registro (*)</label>
+          <input type="date" id="dataRegistro" name="produto.dataRegistro" required>
+        </div>
+      </fieldset>
+
+      <div class="buttons">
+        <button type="submit">Gerar XML</button>
+        <button type="button" id="validate-btn">Validar Dados</button>
+      </div>
+    </form>
+
+    <div class="xml-preview">
+      <h2>Preview do XML</h2>
+      <pre><code id="xml-output"></code></pre>
+      <button id="download-btn" disabled>Download .xml</button>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/formHandler.js"></script>
+</body>
+
+</html>
