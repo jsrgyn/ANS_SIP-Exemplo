@@ -5,13 +5,13 @@ const generateSip = (req, res) => {
   const { error, value } = sipValidator.validate(req.body);
 
   if (error) {
-    const errorMessages = error.details.map(detail => ({
-      field: detail.path.join('.'),
-      message: detail.message
+    const errorMessages = error.details.map((detail) => ({
+      field: detail.path.join("."),
+      message: detail.message,
     }));
-    return res.status(400).json({ 
+    return res.status(400).json({
       message: "Validation failed",
-      errors: errorMessages 
+      errors: errorMessages,
     });
   }
 
