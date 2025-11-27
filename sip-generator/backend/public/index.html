@@ -1,99 +1,1025 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANS SIP XML Generator</title>
+  <title>Gerador SIP XML - ANS RN551</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vkbeautify/0.99.3/vkbeautify.min.js"></script>
 </head>
 
 <body>
   <div class="container">
     <h1>Gerador de SIP XML (ANS RN551)</h1>
+
     <form id="sip-form">
-      <!-- Operator Identification Section -->
+      <!-- Dados da Operadora -->
       <fieldset>
         <legend>Identificação da Operadora</legend>
-        <div>
+        <div class="form-group">
           <label for="cnpj">CNPJ (*)</label>
-          <input type="text" id="cnpj" name="cnpj" required>
+          <input type="text" id="cnpj" name="cnpj" pattern="[0-9]{14}" required>
         </div>
-        <div>
+        <div class="form-group">
           <label for="nomeOperadora">Nome da Operadora (*)</label>
-          <input type="text" id="nomeOperadora" name="nomeOperadora" required>
+          <input type="text" id="nomeOperadora" name="nomeOperadora" maxlength="70" required>
         </div>
-        <div>
+        <div class="form-group">
           <label for="registroANS">Registro ANS (*)</label>
-          <input type="text" id="registroANS" name="registroANS" required>
+          <input type="text" id="registroANS" name="registroANS" pattern="[0-9]{6}" maxlength="6" required>
         </div>
       </fieldset>
 
-      <!-- Transaction Data Section -->
+      <!-- Dados da Transação -->
       <fieldset>
         <legend>Dados da Transação</legend>
-        <div>
+        <div class="form-group">
           <label for="sequencialTransacao">Sequencial da Transação (*)</label>
-          <input type="number" id="sequencialTransacao" name="sequencialTransacao" required min="1" max="999999999999">
+          <input type="number" id="sequencialTransacao" name="sequencialTransacao" min="1" max="999999999999" required>
         </div>
-        <div>
-          <label for="trimestre">Trimestre (*)</label>
-          <select id="trimestre" name="trimestre" required>
-            <option value="01">1º Trimestre (Janeiro)</option>
-            <option value="04">2º Trimestre (Abril)</option>
-            <option value="07">3º Trimestre (Julho)</option>
-            <option value="10">4º Trimestre (Outubro)</option>
+        <div class="form-group">
+          <label for="dataHoraRegistro">Data/Hora do Registro (*)</label>
+          <input type="datetime-local" id="dataHoraRegistro" name="dataHoraRegistro" required>
+        </div>
+        <div class="form-group">
+          <label for="versaoPadrao">Versão do Padrão (*)</label>
+          <select id="versaoPadrao" name="versaoPadrao" required>
+            <option value="1.02">1.02</option>
           </select>
-        </div>
-        <div>
-          <label for="ano">Ano (*)</label>
-          <input type="number" id="ano" name="ano" required min="2010">
         </div>
       </fieldset>
 
-      <!-- Medical Care Data Section -->
+      <!-- Software Gerador -->
       <fieldset>
-        <legend>Dados de Atendimento (Individual/Familiar)</legend>
-        <div>
-          <label for="uf">UF (*)</label>
-          <select id="uf" name="individualFamiliar.ambulatorial[0].uf" required>
-            <option value="SP">São Paulo</option>
-            <option value="RJ">Rio de Janeiro</option>
-            <!-- Adicionar demais estados -->
+        <legend>Software Gerador</legend>
+        <div class="form-group">
+          <label for="nomeAplicativo">Nome do Aplicativo (*)</label>
+          <input type="text" id="nomeAplicativo" name="nomeAplicativo" maxlength="70" required>
+        </div>
+        <div class="form-group">
+          <label for="versaoAplicativo">Versão do Aplicativo (*)</label>
+          <input type="text" id="versaoAplicativo" name="versaoAplicativo" maxlength="70" required>
+        </div>
+        <div class="form-group">
+          <label for="fabricanteAplicativo">Fabricante do Aplicativo (*)</label>
+          <input type="text" id="fabricanteAplicativo" name="fabricanteAplicativo" maxlength="70" required>
+        </div>
+      </fieldset>
+
+      <!-- Período de Reconhecimento -->
+      <fieldset>
+        <legend>Período de Reconhecimento</legend>
+        <div class="form-group">
+          <label for="anoReconhecimento">Ano (*)</label>
+          <input type="number" id="anoReconhecimento" name="anoReconhecimento" min="2010" required>
+        </div>
+        <div class="form-group">
+          <label for="trimestreReconhecimento">Trimestre (*)</label>
+          <select id="trimestreReconhecimento" name="trimestreReconhecimento" required>
+            <option value="01">1º Trimestre</option>
+            <option value="04">2º Trimestre</option>
+            <option value="07">3º Trimestre</option>
+            <option value="10">4º Trimestre</option>
           </select>
         </div>
-        <div>
-          <label for="eventos">Eventos (*)</label>
-          <input type="number" id="eventos" name="individualFamiliar.ambulatorial[0].consultasMedicas.eventos" required
-            min="0" max="99999999">
+      </fieldset>
+
+      <!-- Formas de Contratação -->
+      <fieldset>
+        <legend>Formas de Contratação</legend>
+
+        <!-- Individual/Familiar -->
+        <div class="contratacao-container" id="individualFamiliarContainer">
+          <h3>
+            <input type="checkbox" id="habilitarIndividualFamiliar" name="habilitarIndividualFamiliar"
+              onchange="toggleContratacao('individualFamiliar')">
+            <label for="habilitarIndividualFamiliar">Contratação Individual/Familiar</label>
+          </h3>
+          <div id="individualFamiliarContent" style="display: none;">
+            <button type="button" onclick="adicionarSegmentacao('individualFamiliar')">Adicionar Segmentação</button>
+            <div id="individualFamiliarSegmentacoes"></div>
+          </div>
         </div>
-        <div>
-          <label for="beneficiarios">Beneficiários (*)</label>
-          <input type="number" id="beneficiarios"
-            name="individualFamiliar.ambulatorial[0].consultasMedicas.beneficiarios" required min="0" max="9999999">
+
+        <!-- Coletivo Empresarial -->
+        <div class="contratacao-container" id="coletivoEmpresarialContainer">
+          <h3>
+            <input type="checkbox" id="habilitarColetivoEmpresarial" name="habilitarColetivoEmpresarial"
+              onchange="toggleContratacao('coletivoEmpresarial')">
+            <label for="habilitarColetivoEmpresarial">Contratação Coletivo Empresarial</label>
+          </h3>
+          <div id="coletivoEmpresarialContent" style="display: none;">
+            <button type="button" onclick="adicionarSegmentacao('coletivoEmpresarial')">Adicionar Segmentação</button>
+            <div id="coletivoEmpresarialSegmentacoes"></div>
+          </div>
         </div>
-        <div>
-          <label for="despesas">Despesas (*)</label>
-          <input type="number" id="despesas" name="individualFamiliar.ambulatorial[0].consultasMedicas.despesas"
-            required min="0" max="99999999999.99" step="0.01">
+
+        <!-- Coletivo por Adesão -->
+        <div class="contratacao-container" id="coletivoAdesaoContainer">
+          <h3>
+            <input type="checkbox" id="habilitarColetivoAdesao" name="habilitarColetivoAdesao"
+              onchange="toggleContratacao('coletivoAdesao')">
+            <label for="habilitarColetivoAdesao">Contratação Coletivo por Adesão</label>
+          </h3>
+          <div id="coletivoAdesaoContent" style="display: none;">
+            <button type="button" onclick="adicionarSegmentacao('coletivoAdesao')">Adicionar Segmentação</button>
+            <div id="coletivoAdesaoSegmentacoes"></div>
+          </div>
         </div>
       </fieldset>
 
       <div class="buttons">
-        <button type="submit">Gerar XML</button>
-        <button type="button" id="validate-btn">Validar Dados</button>
+        <button type="button" onclick="gerarXML()">Gerar XML</button>
+        <button type="button" id="limpar-btn" onclick="limparFormulario()">Limpar</button>
       </div>
     </form>
 
+    <!-- Preview do XML -->
     <div class="xml-preview">
       <h2>Preview do XML</h2>
       <pre><code id="xml-output"></code></pre>
-      <button id="download-btn" disabled>Download .xml</button>
+      <button id="download-btn" disabled onclick="downloadXML()">Download .xml</button>
     </div>
   </div>
 
-  <script src="js/app.js"></script>
-  <script src="js/formHandler.js"></script>
+  <script>
+    // Estrutura hierárquica baseada nos XSDs
+    const estruturaSegmentacoes = {
+      ambulatorial: {
+        grupos: {
+          consultasMedicas: {
+            tipo: "EveBenDes",
+            itens: {
+              consultasMedicasAmb: {
+                tipo: "EveBenDes",
+                itens: {
+                  alergiaImunologia: "Eve",
+                  angiologia: "Eve",
+                  cardiologia: "Eve",
+                  cirurgiaGeral: "Eve",
+                  clinicaMedica: "Eve",
+                  dermatologia: "Eve",
+                  endocrinologia: "Eve",
+                  gastroenterologia: "Eve",
+                  geriatria: "Eve",
+                  ginecologiaObstetricia: "Eve",
+                  hematologia: "Eve",
+                  mastologia: "Eve",
+                  nefrologia: "Eve",
+                  neurocirurgia: "Eve",
+                  neurologia: "Eve",
+                  oftalmologia: "Eve",
+                  oncologia: "Eve",
+                  otorrinolaringologia: "Eve",
+                  pediatria: "Eve",
+                  proctologia: "Eve",
+                  psiquiatria: "Eve",
+                  reumatologia: "Eve",
+                  tisiopneumologia: "Eve",
+                  traumatologiaOrtopedica: "Eve",
+                  urologia: "Eve"
+                }
+              },
+              consultaMedProntSoc: "EveBenDes"
+            }
+          },
+          outrosAtendAmb: {
+            tipo: "EveBenDes",
+            itens: {
+              consultaSessaoFisio: "Eve",
+              consultaSessaoFono: "Eve",
+              consultaSessaoNutri: "Eve",
+              consultaSessaoTerap: "Eve",
+              consultaSessaoPsico: "Eve"
+            }
+          },
+          exames: {
+            tipo: "EveBenDes",
+            itens: {
+              ressonanciaMagnet: "Eve",
+              tomografiaComputa: "Eve",
+              procedDiagnCitopat: "EveBen",
+              densitometriaOssea: "Eve",
+              ecodopplerTranstora: "Eve",
+              broncoscopiabiopsia: "Eve",
+              endoscopiaDigestiva: "Eve",
+              colonoscopia: "Eve",
+              holter24h: "Eve",
+              mamografiaConvDig: {
+                tipo: "Eve",
+                itens: {
+                  mamografia50a69: "EveBen"
+                }
+              },
+              cintilografiaMiocard: "Eve",
+              cintilografiaRenal: "Eve",
+              hemoglobinaGlicada: "Eve",
+              pesqSangueOculto: "EveBen",
+              radiografia: "Eve",
+              testeErgometrico: "Eve",
+              ultraSonAbdoTotal: "Eve",
+              ultraSonAbdoInfer: "Eve",
+              ultraSonAbdoSuper: "Eve",
+              ultraSonObstMorfo: "Eve"
+            }
+          },
+          terapias: {
+            tipo: "EveBenDes",
+            itens: {
+              transfusaoAmbulatorial: "Eve",
+              quimioSistemica: "Eve",
+              radioterapiaMegavolt: "Eve",
+              hemodialiseAguda: "Eve",
+              hemodialiseCronica: "Eve",
+              implanteDispIntrauterino: "Eve"
+            }
+          },
+          demaisDespMedHosp: "Des"
+        }
+      },
+      hospitalar: {
+        grupos: {
+          internacoes: {
+            tipo: "EveBenDes",
+            itens: {
+              tipoInternacao: {
+                tipo: "Eve",
+                itens: {
+                  clinica: "Eve",
+                  cirurgica: {
+                    tipo: "Eve",
+                    itens: {
+                      cirurgiaBariatrica: "Eve",
+                      laqueaduraTubaria: "Eve",
+                      vasectomia: "Eve",
+                      fraturaFemur60: "EveBen",
+                      revisaoArtroplastia: "Eve",
+                      implanteCdi: "Eve",
+                      implantacaoMarcap: "Eve"
+                    }
+                  },
+                  pediatrica: {
+                    tipo: "Eve",
+                    itens: {
+                      internacaoRespira: "EveBen",
+                      internacaoUtiNeo: {
+                        tipo: "Eve",
+                        itens: {
+                          internacoesUtiNeo48: "Eve"
+                        }
+                      }
+                    }
+                  },
+                  psiquiatrica: "Eve",
+                  regimeInternacao: {
+                    tipo: "Eve",
+                    itens: {
+                      hospitalar: "EveBen",
+                      hospitalDia: {
+                        tipo: "EveBen",
+                        itens: {
+                          hospitalSaudeMental: "Eve"
+                        }
+                      },
+                      domiciliar: "EveBen"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          interObstetricas: {
+            tipo: "Eve",
+            itens: {
+              obstetrica: "Eve"
+            }
+          },
+          causaInterna: {
+            tipo: "Eve",
+            itens: {
+              neoplasias: {
+                tipo: "Eve",
+                itens: {
+                  cancerMamaFem: {
+                    tipo: "Eve",
+                    itens: {
+                      tratCirurgCancerMam: "Eve"
+                    }
+                  },
+                  cancerColoUtero: {
+                    tipo: "Eve",
+                    itens: {
+                      tratCirurgCancerColo: "Eve"
+                    }
+                  },
+                  cancerColonReto: {
+                    tipo: "Eve",
+                    itens: {
+                      tratCirurgCancerColoReto: "Eve"
+                    }
+                  },
+                  cancerProstata: {
+                    tipo: "Eve",
+                    itens: {
+                      tratCirurgCancerProst: "Eve"
+                    }
+                  }
+                }
+              },
+              diabetesMellitus: "Eve",
+              doencasAparelhoCirc: {
+                tipo: "Eve",
+                itens: {
+                  infartoAgudoMiocardio: "Eve",
+                  doencasHipertensivas: "Eve",
+                  insuficienciaCardCong: "Eve",
+                  doencasCerebrovasc: {
+                    tipo: "Eve",
+                    itens: {
+                      acidenteVascularCere: "Eve"
+                    }
+                  }
+                }
+              },
+              doencasAparelhoResp: {
+                tipo: "Eve",
+                itens: {
+                  doencaPulmoObstrCron: "Eve"
+                }
+              },
+              causasExternas: "Eve"
+            }
+          },
+          demaisDespMedHosp: "Des"
+        }
+      },
+      hospitalarObstetricia: {
+        grupos: {
+          internacoes: {
+            tipo: "EveBenDes",
+            itens: {
+              tipoInternacao: {
+                tipo: "Eve",
+                itens: {
+                  clinica: "Eve",
+                  cirurgica: {
+                    tipo: "Eve",
+                    itens: {
+                      cirurgiaBariatrica: "Eve",
+                      laqueaduraTubaria: "Eve",
+                      vasectomia: "Eve",
+                      fraturaFemur60: "EveBen",
+                      revisaoArtroplastia: "Eve",
+                      implanteCdi: "Eve",
+                      implantacaoMarcap: "Eve"
+                    }
+                  },
+                  pediatrica: {
+                    tipo: "Eve",
+                    itens: {
+                      internacaoRespira: "EveBen",
+                      internacaoUtiNeo: {
+                        tipo: "Eve",
+                        itens: {
+                          internacoesUtiNeo48: "Eve"
+                        }
+                      }
+                    }
+                  },
+                  psiquiatrica: "Eve",
+                  regimeInternacao: {
+                    tipo: "Eve",
+                    itens: {
+                      hospitalar: "EveBen",
+                      hospitalDia: {
+                        tipo: "EveBen",
+                        itens: {
+                          hospitalSaudeMental: "Eve"
+                        }
+                      },
+                      domiciliar: "EveBen"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          interObstetricas: {
+            tipo: "Eve",
+            itens: {
+              obstetrica: "Eve"
+            }
+          },
+          parto: {
+            tipo: "Eve",
+            itens: {
+              partoNormal: "Eve",
+              partoCesareo: "Eve"
+            }
+          },
+          causaInterna: {
+            tipo: "Eve",
+            itens: {
+              neoplasias: {
+                tipo: "Eve",
+                itens: {
+                  cancerMamaFem: {
+                    tipo: "Eve",
+                    itens: {
+                      tratCirurgCancerMam: "Eve"
+                    }
+                  },
+                  cancerColoUtero: {
+                    tipo: "Eve",
+                    itens: {
+                      tratCirurgCancerColo: "Eve"
+                    }
+                  },
+                  cancerColonReto: {
+                    tipo: "Eve",
+                    itens: {
+                      tratCirurgCancerColoReto: "Eve"
+                    }
+                  },
+                  cancerProstata: {
+                    tipo: "Eve",
+                    itens: {
+                      tratCirurgCancerProst: "Eve"
+                    }
+                  }
+                }
+              },
+              diabetesMellitus: "Eve",
+              doencasAparelhoCirc: {
+                tipo: "Eve",
+                itens: {
+                  infartoAgudoMiocardio: "Eve",
+                  doencasHipertensivas: "Eve",
+                  insuficienciaCardCong: "Eve",
+                  doencasCerebrovasc: {
+                    tipo: "Eve",
+                    itens: {
+                      acidenteVascularCere: "Eve"
+                    }
+                  }
+                }
+              },
+              doencasAparelhoResp: {
+                tipo: "Eve",
+                itens: {
+                  doencaPulmoObstrCron: "Eve"
+                }
+              },
+              causasExternas: "Eve"
+            }
+          },
+          nascidoVivo: "Eve",
+          demaisDespMedHosp: "Des"
+        }
+      },
+      odontologico: {
+        grupos: {
+          procOdonto: {
+            tipo: "EveBenDes",
+            itens: {
+              consultasOdontoInic: "EveBenDes",
+              examesRadiograficos: "EveBen",
+              procedimentosPrevent: {
+                tipo: "EveBenDes",
+                itens: {
+                  atividadeEduIndividual: "Eve",
+                  aplicTopProfFluorHemi: "Eve",
+                  selanteElemDentario: "EveBen"
+                }
+              },
+              raspSupraGengHemi: "EveBen",
+              restauraDenteDeciduo: "EveBen",
+              restauraDentePerma: "EveBen",
+              exodontiasSimplesPer: "EveBenDes",
+              trataEndoConclDentesD: "EveBen",
+              trataEndoConclDentesP: "EveBen",
+              protesesOdontologicas: "EveBenDes",
+              protesesOdontoUnitarias: "EveDes"
+            }
+          }
+        }
+      }
+    };
+
+    // Funções para manipulação da interface
+    function toggleContratacao(tipo) {
+      const checkbox = document.getElementById(`habilitar${capitalizeFirst(tipo)}`);
+      const content = document.getElementById(`${tipo}Content`);
+
+      if (checkbox.checked) {
+        content.style.display = 'block';
+      } else {
+        content.style.display = 'none';
+        // Limpar segmentações quando desabilitar
+        document.getElementById(`${tipo}Segmentacoes`).innerHTML = '';
+      }
+    }
+
+    function capitalizeFirst(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function adicionarSegmentacao(tipoContratacao) {
+      const container = document.getElementById(`${tipoContratacao}Segmentacoes`);
+      const index = container.children.length;
+
+      const segmentacaoDiv = document.createElement('div');
+      segmentacaoDiv.className = 'segmentacao';
+      segmentacaoDiv.innerHTML = `
+        <h4>Segmentação ${index + 1}</h4>
+        <div class="segmentacao-header">
+          <label for="${tipoContratacao}_${index}_uf">UF:</label>
+          <select id="${tipoContratacao}_${index}_uf" name="${tipoContratacao}_${index}_uf" required>
+            <option value="AC">AC</option>
+            <option value="AL">AL</option>
+            <option value="AM">AM</option>
+            <option value="AP">AP</option>
+            <option value="BA">BA</option>
+            <option value="CE">CE</option>
+            <option value="DF">DF</option>
+            <option value="ES">ES</option>
+            <option value="GO">GO</option>
+            <option value="MA">MA</option>
+            <option value="MG">MG</option>
+            <option value="MS">MS</option>
+            <option value="MT">MT</option>
+            <option value="PA">PA</option>
+            <option value="PB">PB</option>
+            <option value="PE">PE</option>
+            <option value="PI">PI</option>
+            <option value="PR">PR</option>
+            <option value="RJ">RJ</option>
+            <option value="RN">RN</option>
+            <option value="RO">RO</option>
+            <option value="RR">RR</option>
+            <option value="RS">RS</option>
+            <option value="SC">SC</option>
+            <option value="SE">SE</option>
+            <option value="SP">SP</option>
+            <option value="TO">TO</option>
+          </select>
+          
+          <label for="${tipoContratacao}_${index}_trimestre">Trimestre de Ocorrência:</label>
+          <select id="${tipoContratacao}_${index}_trimestre" name="${tipoContratacao}_${index}_trimestre" required>
+            <option value="01">1º Trimestre</option>
+            <option value="04">2º Trimestre</option>
+            <option value="07">3º Trimestre</option>
+            <option value="10">4º Trimestre</option>
+          </select>
+          
+          <label for="${tipoContratacao}_${index}_ano">Ano de Ocorrência:</label>
+          <input type="number" id="${tipoContratacao}_${index}_ano" name="${tipoContratacao}_${index}_ano" min="2002" required>
+          
+          <button type="button" onclick="this.parentNode.parentNode.remove()">Remover Segmentação</button>
+        </div>
+        
+        <div class="segmentacao-tipos">
+          <h5>Tipos de Segmentação</h5>
+          <div class="tipo-segmentacao">
+            <input type="checkbox" id="${tipoContratacao}_${index}_ambulatorial" 
+                   onchange="toggleTipoSegmentacao('${tipoContratacao}', ${index}, 'ambulatorial')">
+            <label for="${tipoContratacao}_${index}_ambulatorial">Ambulatorial</label>
+            <div id="${tipoContratacao}_${index}_ambulatorial_campos" class="campos-segmentacao" style="display: none;"></div>
+          </div>
+          
+          <div class="tipo-segmentacao">
+            <input type="checkbox" id="${tipoContratacao}_${index}_hospitalar" 
+                   onchange="toggleTipoSegmentacao('${tipoContratacao}', ${index}, 'hospitalar')">
+            <label for="${tipoContratacao}_${index}_hospitalar">Hospitalar</label>
+            <div id="${tipoContratacao}_${index}_hospitalar_campos" class="campos-segmentacao" style="display: none;"></div>
+          </div>
+          
+          <div class="tipo-segmentacao">
+            <input type="checkbox" id="${tipoContratacao}_${index}_hospitalarObstetricia" 
+                   onchange="toggleTipoSegmentacao('${tipoContratacao}', ${index}, 'hospitalarObstetricia')">
+            <label for="${tipoContratacao}_${index}_hospitalarObstetricia">Hospitalar com Obstetrícia</label>
+            <div id="${tipoContratacao}_${index}_hospitalarObstetricia_campos" class="campos-segmentacao" style="display: none;"></div>
+          </div>
+          
+          <div class="tipo-segmentacao">
+            <input type="checkbox" id="${tipoContratacao}_${index}_odontologico" 
+                   onchange="toggleTipoSegmentacao('${tipoContratacao}', ${index}, 'odontologico')">
+            <label for="${tipoContratacao}_${index}_odontologico">Odontológico</label>
+            <div id="${tipoContratacao}_${index}_odontologico_campos" class="campos-segmentacao" style="display: none;"></div>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(segmentacaoDiv);
+    }
+
+    function toggleTipoSegmentacao(tipoContratacao, segmentacaoIndex, tipoSegmentacao) {
+      const checkbox = document.getElementById(`${tipoContratacao}_${segmentacaoIndex}_${tipoSegmentacao}`);
+      const container = document.getElementById(`${tipoContratacao}_${segmentacaoIndex}_${tipoSegmentacao}_campos`);
+
+      if (checkbox.checked) {
+        container.style.display = 'block';
+        gerarCamposSegmentacao(tipoContratacao, segmentacaoIndex, tipoSegmentacao);
+      } else {
+        container.style.display = 'none';
+        container.innerHTML = '';
+      }
+    }
+
+    function gerarCamposSegmentacao(tipoContratacao, segmentacaoIndex, tipoSegmentacao) {
+      const container = document.getElementById(`${tipoContratacao}_${segmentacaoIndex}_${tipoSegmentacao}_campos`);
+      const estrutura = estruturaSegmentacoes[tipoSegmentacao];
+
+      let html = '';
+
+      for (const [grupoNome, grupoConfig] of Object.entries(estrutura.grupos)) {
+        html += `<fieldset class="grupo-campos"><legend>${grupoNome}</legend>`;
+        html += gerarCamposRecursivo(grupoConfig, `${tipoContratacao}_${segmentacaoIndex}_${tipoSegmentacao}_${grupoNome}`);
+        html += '</fieldset>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    function gerarCamposRecursivo(config, prefixo) {
+      let html = '';
+
+      if (typeof config === 'string') {
+        // Configuração simples (apenas tipo)
+        return gerarCamposTipo(config, prefixo);
+      }
+
+      if (config.itens) {
+        for (const [itemNome, itemConfig] of Object.entries(config.itens)) {
+          const itemPrefixo = `${prefixo}_${itemNome}`;
+
+          if (typeof itemConfig === 'string') {
+            // Item simples
+            html += `<div class="item-campo"><h6>${itemNome}</h6>`;
+            html += gerarCamposTipo(itemConfig, itemPrefixo);
+            html += '</div>';
+          } else {
+            // Item com subitens
+            html += `<fieldset class="subitem-campos"><legend>${itemNome}</legend>`;
+            html += gerarCamposRecursivo(itemConfig, itemPrefixo);
+            html += '</fieldset>';
+          }
+        }
+      }
+
+      return html;
+    }
+
+    function gerarCamposTipo(tipo, prefixo) {
+      let html = '';
+
+      switch (tipo) {
+        case 'Eve':
+          html = `
+            <label for="${prefixo}_eventos">Eventos:</label>
+            <input type="number" id="${prefixo}_eventos" name="${prefixo}_eventos" min="0" step="1">
+          `;
+          break;
+        case 'EveBen':
+          html = `
+            <label for="${prefixo}_eventos">Eventos:</label>
+            <input type="number" id="${prefixo}_eventos" name="${prefixo}_eventos" min="0" step="1">
+            <label for="${prefixo}_beneficiarios">Beneficiários:</label>
+            <input type="number" id="${prefixo}_beneficiarios" name="${prefixo}_beneficiarios" min="0" step="1">
+          `;
+          break;
+        case 'EveDes':
+          html = `
+            <label for="${prefixo}_eventos">Eventos:</label>
+            <input type="number" id="${prefixo}_eventos" name="${prefixo}_eventos" min="0" step="1">
+            <label for="${prefixo}_despesas">Despesas:</label>
+            <input type="number" id="${prefixo}_despesas" name="${prefixo}_despesas" min="0" step="0.01">
+          `;
+          break;
+        case 'EveBenDes':
+          html = `
+            <label for="${prefixo}_eventos">Eventos:</label>
+            <input type="number" id="${prefixo}_eventos" name="${prefixo}_eventos" min="0" step="1">
+            <label for="${prefixo}_beneficiarios">Beneficiários:</label>
+            <input type="number" id="${prefixo}_beneficiarios" name="${prefixo}_beneficiarios" min="0" step="1">
+            <label for="${prefixo}_despesas">Despesas:</label>
+            <input type="number" id="${prefixo}_despesas" name="${prefixo}_despesas" min="0" step="0.01">
+          `;
+          break;
+        case 'Des':
+          html = `
+            <label for="${prefixo}_despesas">Despesas:</label>
+            <input type="number" id="${prefixo}_despesas" name="${prefixo}_despesas" min="0" step="0.01">
+          `;
+          break;
+      }
+
+      return html;
+    }
+
+    function gerarXML() {
+      const xmlDoc = document.implementation.createDocument('', '', null);
+      const mensagemSIP = xmlDoc.createElement('mensagemSIP');
+
+      // Cabeçalho
+      const cabecalho = gerarCabecalho(xmlDoc);
+      mensagemSIP.appendChild(cabecalho);
+
+      // Mensagem
+      const mensagem = xmlDoc.createElement('mensagem');
+      const operadoraParaANS = xmlDoc.createElement('operadoraParaANS');
+      const sipOperadoraParaAns = xmlDoc.createElement('sipOperadoraParaAns');
+      const envioSip = xmlDoc.createElement('envioSip');
+
+      // Data Trimestre Reconhecimento
+      const dataTrimestreReconhecimento = xmlDoc.createElement('dataTrimestreReconhecimento');
+      const diaRecon = xmlDoc.createElement('dia');
+      diaRecon.textContent = '01';
+      dataTrimestreReconhecimento.appendChild(diaRecon);
+
+      const mesRecon = xmlDoc.createElement('mes');
+      mesRecon.textContent = document.getElementById('trimestreReconhecimento').value;
+      dataTrimestreReconhecimento.appendChild(mesRecon);
+
+      const anoRecon = xmlDoc.createElement('ano');
+      anoRecon.textContent = document.getElementById('anoReconhecimento').value;
+      dataTrimestreReconhecimento.appendChild(anoRecon);
+
+      envioSip.appendChild(dataTrimestreReconhecimento);
+
+      // Formas de Contratação
+      const formaContratacao = xmlDoc.createElement('formaContratacao');
+
+      // Processar cada tipo de contratação habilitado
+      const tiposContratacao = ['individualFamiliar', 'coletivoEmpresarial', 'coletivoAdesao'];
+
+      for (const tipo of tiposContratacao) {
+        const checkbox = document.getElementById(`habilitar${capitalizeFirst(tipo)}`);
+        if (checkbox && checkbox.checked) {
+          const tipoElement = xmlDoc.createElement(tipo);
+          const segmentacoesContainer = document.getElementById(`${tipo}Segmentacoes`);
+
+          for (let i = 0; i < segmentacoesContainer.children.length; i++) {
+            const segmentacaoDiv = segmentacoesContainer.children[i];
+            const segmentacao = xmlDoc.createElement('segmentacao');
+
+            // Processar cada tipo de segmentação habilitado
+            const tiposSegmentacao = ['ambulatorial', 'hospitalar', 'hospitalarObstetricia', 'odontologico'];
+
+            for (const tipoSeg of tiposSegmentacao) {
+              const segCheckbox = document.getElementById(`${tipo}_${i}_${tipoSeg}`);
+              if (segCheckbox && segCheckbox.checked) {
+                const segElement = xmlDoc.createElement(tipoSeg);
+                const quadro = xmlDoc.createElement('quadro');
+
+                // Data Trimestre Ocorrência
+                const dataTrimestreOcorrencia = xmlDoc.createElement('dataTrimestreOcorrencia');
+                const diaOcor = xmlDoc.createElement('dia');
+                diaOcor.textContent = '01';
+                dataTrimestreOcorrencia.appendChild(diaOcor);
+
+                const mesOcor = xmlDoc.createElement('mes');
+                mesOcor.textContent = document.getElementById(`${tipo}_${i}_trimestre`).value;
+                dataTrimestreOcorrencia.appendChild(mesOcor);
+
+                const anoOcor = xmlDoc.createElement('ano');
+                anoOcor.textContent = document.getElementById(`${tipo}_${i}_ano`).value;
+                dataTrimestreOcorrencia.appendChild(anoOcor);
+
+                quadro.appendChild(dataTrimestreOcorrencia);
+
+                // UF
+                const uf = xmlDoc.createElement('uf');
+                uf.textContent = document.getElementById(`${tipo}_${i}_uf`).value;
+                quadro.appendChild(uf);
+
+                // Processar campos da segmentação
+                processarCamposSegmentacao(xmlDoc, quadro, tipoSeg, `${tipo}_${i}_${tipoSeg}`);
+
+                segElement.appendChild(quadro);
+                segmentacao.appendChild(segElement);
+              }
+            }
+
+            tipoElement.appendChild(segmentacao);
+          }
+
+          formaContratacao.appendChild(tipoElement);
+        }
+      }
+
+      envioSip.appendChild(formaContratacao);
+      sipOperadoraParaAns.appendChild(envioSip);
+      operadoraParaANS.appendChild(sipOperadoraParaAns);
+      mensagem.appendChild(operadoraParaANS);
+      mensagemSIP.appendChild(mensagem);
+
+      // Epílogo
+      const epilogo = xmlDoc.createElement('epilogo');
+      const hash = xmlDoc.createElement('hash');
+      hash.textContent = ''; // Hash seria calculado posteriormente
+      epilogo.appendChild(hash);
+      mensagemSIP.appendChild(epilogo);
+
+      xmlDoc.appendChild(mensagemSIP);
+
+      const serializer = new XMLSerializer();
+      const xmlString = serializer.serializeToString(xmlDoc);
+
+      // Atualizar preview
+      const pre = document.getElementById('xml-output');
+      pre.textContent = vkBeautify.xml(xmlString);
+      document.getElementById('download-btn').disabled = false;
+    }
+
+    function gerarCabecalho(xmlDoc) {
+      const cabecalho = xmlDoc.createElement('cabecalho');
+
+      // Identificação da Transação
+      const identificacaoTransacao = xmlDoc.createElement('identificacaoTransacao');
+
+      const tipoTransacao = xmlDoc.createElement('tipoTransacao');
+      tipoTransacao.textContent = 'ENVIO_SIP';
+      identificacaoTransacao.appendChild(tipoTransacao);
+
+      const sequencialTransacao = xmlDoc.createElement('sequencialTransacao');
+      sequencialTransacao.textContent = document.getElementById('sequencialTransacao').value;
+      identificacaoTransacao.appendChild(sequencialTransacao);
+
+      const dataHoraRegistroTransacao = xmlDoc.createElement('dataHoraRegistroTransacao');
+      dataHoraRegistroTransacao.textContent = document.getElementById('dataHoraRegistro').value.replace('T', 'T');
+      identificacaoTransacao.appendChild(dataHoraRegistroTransacao);
+
+      cabecalho.appendChild(identificacaoTransacao);
+
+      // Origem
+      const origem = xmlDoc.createElement('origem');
+      const cnpjOrigem = xmlDoc.createElement('cnpj');
+      cnpjOrigem.textContent = document.getElementById('cnpj').value;
+      origem.appendChild(cnpjOrigem);
+      cabecalho.appendChild(origem);
+
+      // Destino
+      const destino = xmlDoc.createElement('destino');
+      const registroAnsDestino = xmlDoc.createElement('registroANS');
+      registroAnsDestino.textContent = '253390'; // ANS
+      destino.appendChild(registroAnsDestino);
+      cabecalho.appendChild(destino);
+
+      // Versão Padrão
+      const versaoPadrao = xmlDoc.createElement('versaoPadrao');
+      versaoPadrao.textContent = document.getElementById('versaoPadrao').value;
+      cabecalho.appendChild(versaoPadrao);
+
+      // Identificação Software Gerador
+      const identificacaoSoftwareGerador = xmlDoc.createElement('identificacaoSoftwareGerador');
+
+      const nomeAplicativo = xmlDoc.createElement('nomeAplicativo');
+      nomeAplicativo.textContent = document.getElementById('nomeAplicativo').value;
+      identificacaoSoftwareGerador.appendChild(nomeAplicativo);
+
+      const versaoAplicativo = xmlDoc.createElement('versaoAplicativo');
+      versaoAplicativo.textContent = document.getElementById('versaoAplicativo').value;
+      identificacaoSoftwareGerador.appendChild(versaoAplicativo);
+
+      const fabricanteAplicativo = xmlDoc.createElement('fabricanteAplicativo');
+      fabricanteAplicativo.textContent = document.getElementById('fabricanteAplicativo').value;
+      identificacaoSoftwareGerador.appendChild(fabricanteAplicativo);
+
+      cabecalho.appendChild(identificacaoSoftwareGerador);
+
+      return cabecalho;
+    }
+
+    function processarCamposSegmentacao(xmlDoc, quadro, tipoSegmentacao, prefixo) {
+      const estrutura = estruturaSegmentacoes[tipoSegmentacao];
+
+      for (const [grupoNome, grupoConfig] of Object.entries(estrutura.grupos)) {
+        const grupoElement = xmlDoc.createElement(grupoNome);
+        processarCamposRecursivo(xmlDoc, grupoElement, grupoConfig, `${prefixo}_${grupoNome}`);
+        quadro.appendChild(grupoElement);
+      }
+    }
+
+    function processarCamposRecursivo(xmlDoc, elementoPai, config, prefixo) {
+      if (typeof config === 'string') {
+        // Configuração simples (apenas tipo)
+        processarCamposTipo(xmlDoc, elementoPai, config, prefixo);
+        return;
+      }
+
+      if (config.itens) {
+        for (const [itemNome, itemConfig] of Object.entries(config.itens)) {
+          const itemElement = xmlDoc.createElement(itemNome);
+          const itemPrefixo = `${prefixo}_${itemNome}`;
+
+          if (typeof itemConfig === 'string') {
+            // Item simples
+            processarCamposTipo(xmlDoc, itemElement, itemConfig, itemPrefixo);
+          } else {
+            // Item com subitens
+            processarCamposRecursivo(xmlDoc, itemElement, itemConfig, itemPrefixo);
+          }
+
+          elementoPai.appendChild(itemElement);
+        }
+      }
+    }
+
+    function processarCamposTipo(xmlDoc, elemento, tipo, prefixo) {
+      const eventosInput = document.getElementById(`${prefixo}_eventos`);
+      const beneficiariosInput = document.getElementById(`${prefixo}_beneficiarios`);
+      const despesasInput = document.getElementById(`${prefixo}_despesas`);
+
+      switch (tipo) {
+        case 'Eve':
+          if (eventosInput && eventosInput.value) {
+            const eventos = xmlDoc.createElement('eventos');
+            eventos.textContent = eventosInput.value;
+            elemento.appendChild(eventos);
+          }
+          break;
+        case 'EveBen':
+          if (eventosInput && eventosInput.value) {
+            const eventos = xmlDoc.createElement('eventos');
+            eventos.textContent = eventosInput.value;
+            elemento.appendChild(eventos);
+          }
+          if (beneficiariosInput && beneficiariosInput.value) {
+            const beneficiarios = xmlDoc.createElement('beneficiarios');
+            beneficiarios.textContent = beneficiariosInput.value;
+            elemento.appendChild(beneficiarios);
+          }
+          break;
+        case 'EveDes':
+          if (eventosInput && eventosInput.value) {
+            const eventos = xmlDoc.createElement('eventos');
+            eventos.textContent = eventosInput.value;
+            elemento.appendChild(eventos);
+          }
+          if (despesasInput && despesasInput.value) {
+            const despesas = xmlDoc.createElement('despesas');
+            despesas.textContent = despesasInput.value.replace('.', ',');
+            elemento.appendChild(despesas);
+          }
+          break;
+        case 'EveBenDes':
+          if (eventosInput && eventosInput.value) {
+            const eventos = xmlDoc.createElement('eventos');
+            eventos.textContent = eventosInput.value;
+            elemento.appendChild(eventos);
+          }
+          if (beneficiariosInput && beneficiariosInput.value) {
+            const beneficiarios = xmlDoc.createElement('beneficiarios');
+            beneficiarios.textContent = beneficiariosInput.value;
+            elemento.appendChild(beneficiarios);
+          }
+          if (despesasInput && despesasInput.value) {
+            const despesas = xmlDoc.createElement('despesas');
+            despesas.textContent = despesasInput.value.replace('.', ',');
+            elemento.appendChild(despesas);
+          }
+          break;
+        case 'Des':
+          if (despesasInput && despesasInput.value) {
+            const despesas = xmlDoc.createElement('despesas');
+            despesas.textContent = despesasInput.value.replace('.', ',');
+            elemento.appendChild(despesas);
+          }
+          break;
+      }
+    }
+
+    function downloadXML() {
+      const xmlString = document.getElementById('xml-output').textContent;
+      const blob = new Blob([xmlString], { type: 'application/xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sip.xml';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function limparFormulario() {
+      document.getElementById('sip-form').reset();
+      document.getElementById('individualFamiliarContent').style.display = 'none';
+      document.getElementById('coletivoEmpresarialContent').style.display = 'none';
+      document.getElementById('coletivoAdesaoContent').style.display = 'none';
+      document.getElementById('individualFamiliarSegmentacoes').innerHTML = '';
+      document.getElementById('coletivoEmpresarialSegmentacoes').innerHTML = '';
+      document.getElementById('coletivoAdesaoSegmentacoes').innerHTML = '';
+      document.getElementById('xml-output').textContent = '';
+      document.getElementById('download-btn').disabled = true;
+    }
+
+    // Inicialização
+    document.getElementById('dataHoraRegistro').value = new Date().toISOString().slice(0, 16);
+    document.getElementById('anoReconhecimento').value = new Date().getFullYear();
+  </script>
 </body>
 
 </html>

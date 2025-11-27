@@ -1,3 +1,4 @@
+/* style.css */
 body {
   font-family: sans-serif;
   background-color: #f4f4f9;
@@ -7,7 +8,7 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: auto;
   background: #fff;
   padding: 20px;
@@ -16,7 +17,10 @@ body {
 }
 
 h1,
-h2 {
+h2,
+h3,
+h4,
+h5 {
   color: #0056b3;
 }
 
@@ -38,6 +42,10 @@ legend {
   color: #0056b3;
 }
 
+.form-group {
+  margin-bottom: 15px;
+}
+
 label {
   display: block;
   margin-bottom: 5px;
@@ -47,6 +55,7 @@ label {
 input[type="text"],
 input[type="date"],
 input[type="number"],
+input[type="datetime-local"],
 select {
   width: 100%;
   padding: 8px;
@@ -74,11 +83,11 @@ button:hover {
   background-color: #004494;
 }
 
-#validate-btn {
+#limpar-btn {
   background-color: #6c757d;
 }
 
-#validate-btn:hover {
+#limpar-btn:hover {
   background-color: #5a6268;
 }
 
@@ -92,6 +101,8 @@ pre {
   border-radius: 4px;
   white-space: pre-wrap;
   word-wrap: break-word;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 #download-btn {
@@ -101,4 +112,92 @@ pre {
 #download-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.contratacao-container {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.contratacao-container h3 {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+}
+
+.contratacao-container h3 input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.segmentacao {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+}
+
+.segmentacao-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.segmentacao-tipos {
+  margin-top: 15px;
+}
+
+.tipo-segmentacao {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.campos-segmentacao {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.grupo-campos {
+  margin-bottom: 15px;
+}
+
+.subitem-campos {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.item-campo {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+}
+
+.item-campo h6 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.item-campo label {
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+.item-campo input {
+  width: auto;
+  margin-right: 15px;
 }
