@@ -1020,6 +1020,33 @@
     document.getElementById('dataHoraRegistro').value = new Date().toISOString().slice(0, 16);
     document.getElementById('anoReconhecimento').value = new Date().getFullYear();
   </script>
+
+  <!-- Modal de Preview XML -->
+  <div id="xmlPreviewModal" class="modal"
+    style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div class="modal-content"
+      style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
+      <button class="close" aria-label="Fechar preview"
+        onclick="document.getElementById('xmlPreviewModal').style.display='none'"
+        onKeyDown="if(event.key === 'Enter' || event.key === ' ') this.click()"
+        style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; background: none; border: none;">&times;</button>
+      <h2>Pré-visualização do XML</h2>
+      <pre id="xmlPreviewContent"
+        style="max-height: 400px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word;"></pre>
+    </div>
+  </div>
+
+  <style>
+    .modal-content pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    .close:focus {
+      outline: 2px solid blue;
+    }
+  </style>
 </body>
 
 </html>
