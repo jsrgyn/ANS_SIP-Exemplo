@@ -27,6 +27,58 @@ formData.coletivoEmpresarial = coletarDadosContratacao("coletivoEmpresarial");
 formData.coletivoAdesao = coletarDadosContratacao("coletivoAdesao");
 
 function gerarXML() {
+  // Coletar dados personalizados de todas as segmentações
+  function coletarCamposPersonalizados(tipoContratacao, segmentacaoTipo) {
+    const camposPersonalizados = [];
+    const segmentacoesContainer = document.getElementById(
+      `${tipoContratacao}Segmentacoes`
+    );
+
+    for (let i = 0; i < segmentacoesContainer.children.length; i++) {
+      const camposContainer = document.getElementById(
+        `${tipoContratacao}_${i}_${segmentacaoTipo}_campos`
+      );
+
+      if (camposContainer) {
+        const grupos = camposContainer.querySelectorAll("fieldset");
+        const gruposDados = {};
+
+        grupos.forEach((grupo) => {
+          const grupoNome = grupo.querySelector("legend").textContent;
+          const grupoValores = {};
+
+          grupo
+            .querySelectorAll('input[type="number"], input[type="text"]')
+            .forEach((input) => {
+              const valorInput = input.value;
+              if (valorInput) {
+                const chave = input.name.split("_").pop();
+                // Converter para número se for um campo numérico
+                grupoValores[chave] =
+                  input.type === "number"
+                    ? parseFloat(valorInput.replace(",", "."))
+                    : valorInput;
+              }
+            });
+
+          if (Object.keys(grupoValores).length > 0) {
+            gruposDados[grupoNome] = grupoValores;
+          }
+        });
+
+        camposPersonalizados.push(gruposDados);
+      }
+    }
+
+    return camposPersonalizados;
+  }
+
+  // Função para padronizar campos numéricos
+  function normalizarNumero(valor) {
+    // Converte vírgula para ponto e parseia como float
+    return valor ? parseFloat(valor.toString().replace(",", ".")) : null;
+  }
+
   const formData = {
     cabecalho: {
       cnpj: document.getElementById("cnpj").value,
@@ -51,15 +103,78 @@ function gerarXML() {
     formasContratacao: {
       individualFamiliar: document.getElementById("habilitarIndividualFamiliar")
         .checked
-        ? coletarDadosContratacao("individualFamiliar")
+        ? {
+            segmentacoes:
+              coletarDadosContratacao("individualFamiliar").segmentacoes,
+            camposPersonalizados: {
+              ambulatorial: coletarCamposPersonalizados(
+                "individualFamiliar",
+                "ambulatorial"
+              ),
+              hospitalar: coletarCamposPersonalizados(
+                "individualFamiliar",
+                "hospitalar"
+              ),
+              hospitalarObstetricia: coletarCamposPersonalizados(
+                "individualFamiliar",
+                "hospitalarObstetricia"
+              ),
+              odontologico: coletarCamposPersonalizados(
+                "individualFamiliar",
+                "odontologico"
+              ),
+            },
+          }
         : null,
       coletivoEmpresarial: document.getElementById(
         "habilitarColetivoEmpresarial"
       ).checked
-        ? coletarDadosContratacao("coletivoEmpresarial")
+        ? {
+            segmentacoes: coletarDadosContratacao("coletivoEmpresarial")
+              .segmentacoes,
+            camposPersonalizados: {
+              ambulatorial: coletarCamposPersonalizados(
+                "coletivoEmpresarial",
+                "ambulatorial"
+              ),
+              hospitalar: coletarCamposPersonalizados(
+                "coletivoEmpresarial",
+                "hospitalar"
+              ),
+              hospitalarObstetricia: coletarCamposPersonalizados(
+                "coletivoEmpresarial",
+                "hospitalarObstetricia"
+              ),
+              odontologico: coletarCamposPersonalizados(
+                "coletivoEmpresarial",
+                "odontologico"
+              ),
+            },
+          }
         : null,
       coletivoAdesao: document.getElementById("habilitarColetivoAdesao").checked
-        ? coletarDadosContratacao("coletivoAdesao")
+        ? {
+            segmentacoes:
+              coletarDadosContratacao("coletivoAdesao").segmentacoes,
+            camposPersonalizados: {
+              ambulatorial: coletarCamposPersonalizados(
+                "coletivoAdesao",
+                "ambulatorial"
+              ),
+              hospitalar: coletarCamposPersonalizados(
+                "coletivoAdesao",
+                "hospitalar"
+              ),
+              hospitalarObstetricia: coletarCamposPersonalizados(
+                "coletivoAdesao",
+                "hospitalarObstetricia"
+              ),
+              odontologico: coletarCamposPersonalizados(
+                "coletivoAdesao",
+                "odontologico"
+              ),
+            },
+          }
         : null,
     },
   };
@@ -70,7 +185,8 @@ function gerarXML() {
     return;
   }
 
-  fetch("/api/gerar-sip", {
+  console.log("Dados enviados:", JSON.stringify(formData, null, 2));
+  fetch("/api/generate-sip", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -78,8 +194,12 @@ function gerarXML() {
     body: JSON.stringify(formData),
   })
     .then((response) => {
+      console.log("Resposta recebida:", response.status, response.statusText);
       if (!response.ok) {
-        throw new Error("Falha ao gerar XML");
+        return response.text().then((errorText) => {
+          console.error("Detalhes do erro:", errorText);
+          throw new Error("Falha ao gerar XML: " + errorText);
+        });
       }
       return response.text();
     })
@@ -111,7 +231,9 @@ function gerarXML() {
     })
     .catch((error) => {
       console.error("Erro ao gerar XML:", error);
-      alert("Erro ao gerar XML. Verifique os dados e tente novamente.");
+      alert(
+        "Erro ao gerar XML. Verifique os dados e tente novamente. Detalhes no console."
+      );
     });
 }
 
@@ -129,11 +251,11 @@ function validarFormulario(formData) {
 
 function coletarDadosContratacao(tipoContratacao) {
   const contratacaoData = {
-    segmentacao: [],
+    segmentacoes: [],
   };
 
   const segmentacaoContainer = document.getElementById(
-    `${tipoContratacao}Segmentacao`
+    `${tipoContratacao}Segmentacoes`
   );
   for (let i = 0; i < segmentacaoContainer.children.length; i++) {
     const segmentacaoDiv = segmentacaoContainer.children[i];
@@ -175,7 +297,7 @@ function coletarDadosContratacao(tipoContratacao) {
       };
     }
 
-    contratacaoData.segmentacao.push(segmentacao);
+    contratacaoData.segmentacoes.push(segmentacao);
   }
 
   return contratacaoData;

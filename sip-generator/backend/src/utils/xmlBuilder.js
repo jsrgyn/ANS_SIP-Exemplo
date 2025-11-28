@@ -10,9 +10,6 @@ const buildSipXML = (data) => {
     suppressEmptyNode: true,
   });
 
-  const dataHoraRegistro = new Date().toISOString();
-
-  // Gera hash do conteúdo como epilogo
   const hashContent = crypto
     .createHash("sha256")
     .update(JSON.stringify(data))
@@ -24,20 +21,22 @@ const buildSipXML = (data) => {
       cabecalho: {
         identificacaoTransacao: {
           tipoTransacao: "ENVIO_SIP",
-          sequencialTransacao: data.sequencialTransacao || "1",
-          dataHoraRegistroTransacao: dataHoraRegistro,
+          sequencialTransacao: data.cabecalho.sequencialTransacao,
+          dataHoraRegistroTransacao: data.cabecalho.dataHoraRegistro,
         },
         origem: {
-          registroANS: data.registroANS,
+          registroANS: data.cabecalho.registroANS,
+          cnpj: data.cabecalho.cnpj,
+          nomeOperadora: data.cabecalho.nomeOperadora,
         },
         destino: {
-          cnpj: "33883888000169", // CNPJ fixo da ANS
+          registroANS: "253390", // ANS
         },
-        versaoPadrao: "1.02",
+        versaoPadrao: data.cabecalho.versaoPadrao,
         identificacaoSoftwareGerador: {
-          nomeAplicativo: "SIP Generator",
-          versaoAplicativo: "1.0",
-          fabricanteAplicativo: "Gerador SIP",
+          nomeAplicativo: data.softwareGerador.nomeAplicativo,
+          versaoAplicativo: data.softwareGerador.versaoAplicativo,
+          fabricanteAplicativo: data.softwareGerador.fabricanteAplicativo,
         },
       },
       mensagem: {
@@ -45,19 +44,19 @@ const buildSipXML = (data) => {
           sipOperadoraParaAns: {
             dataTrimestreReconhecimento: {
               dia: "01",
-              mes: data.trimestre || "01",
-              ano: data.ano || new Date().getFullYear(),
+              mes: data.periodoReconhecimento.trimestreReconhecimento,
+              ano: data.periodoReconhecimento.anoReconhecimento,
             },
             formaContratacao: {
-              individualFamiliar: {
-                segmentacao: buildSegmentacaoXML(data.individualFamiliar),
-              },
-              coletivoEmpresarial: {
-                segmentacao: buildSegmentacaoXML(data.coletivoEmpresarial),
-              },
-              coletivoAdesao: {
-                segmentacao: buildSegmentacaoXML(data.coletivoAdesao),
-              },
+              individualFamiliar: buildContratacaoXML(
+                data.formasContratacao.individualFamiliar
+              ),
+              coletivoEmpresarial: buildContratacaoXML(
+                data.formasContratacao.coletivoEmpresarial
+              ),
+              coletivoAdesao: buildContratacaoXML(
+                data.formasContratacao.coletivoAdesao
+              ),
             },
           },
         },
@@ -69,6 +68,131 @@ const buildSipXML = (data) => {
   };
 
   return builder.build(xmlObject);
+};
+
+const buildContratacaoXML = (contratacao) => {
+  if (!contratacao) return {};
+
+  const segmentacoes = contratacao.segmentacao.map((seg) => {
+    const segXML = {};
+    const tiposSegmentacao = [
+      "ambulatorial",
+      "hospitalar",
+      "hospitalarObstetricia",
+      "odontologico",
+    ];
+
+    tiposSegmentacao.forEach((tipo) => {
+      if (seg[tipo]) {
+        segXML[tipo] = buildSegmentacaoEspecificaXML(seg[tipo], tipo);
+      }
+    });
+
+    if (seg.camposPersonalizados) {
+      segXML.camposPersonalizados = seg.camposPersonalizados;
+    }
+
+    return segXML;
+  });
+
+  return { segmentacao: segmentacoes };
+};
+
+const buildSegmentacaoEspecificaXML = (segmentacao, tipo) => {
+  if (!segmentacao) return {};
+
+  const processarCamposPersonalizados = (camposPersonalizados) => {
+    if (!camposPersonalizados || !Array.isArray(camposPersonalizados))
+      return [];
+
+    return camposPersonalizados.map((grupo) => {
+      const grupoXML = {};
+
+      for (const [nomeGrupo, valores] of Object.entries(grupo)) {
+        const grupoElemento = {
+          nome: nomeGrupo,
+        };
+
+        for (const [chave, valor] of Object.entries(valores)) {
+          if (typeof valor === "number") {
+            grupoElemento[chave] = valor.toString().replace(".", ",");
+          } else {
+            grupoElemento[chave] = valor;
+          }
+        }
+
+        grupoXML[nomeGrupo] = grupoElemento;
+      }
+
+      return grupoXML;
+    });
+  };
+
+  const quadros = segmentacao.quadro
+    ? segmentacao.quadro.map((quadro) => {
+        const quadroXML = {
+          dataTrimestreOcorrencia: quadro.dataTrimestreOcorrencia,
+          uf: quadro.uf,
+        };
+
+        // Adicionar campos específicos de cada tipo de segmentação
+        switch (tipo) {
+          case "ambulatorial":
+            quadroXML.itensConsultasMedicas = buildConsultasMedicas(
+              quadro.consultasMedicas
+            );
+            quadroXML.itensOutrosAtendAmbu = buildOutrosAtendimentos(
+              quadro.outrosAtendimentos
+            );
+            quadroXML.itensExames = buildExames(quadro.exames);
+            quadroXML.itensTerapias = buildTerapias(quadro.terapias);
+            quadroXML.itensDemDespMedHosp = buildDespesasMedHosp(
+              quadro.despesasMedHosp
+            );
+            break;
+          case "hospitalar":
+            quadroXML.ct_quadroHospInternacoes = buildInternacoes(
+              quadro.internacoes
+            );
+            quadroXML.interObstetricas = buildInterObstetricas(
+              quadro.interObstetricas
+            );
+            quadroXML.causaInterna = buildCausasInternas(quadro.causasInternas);
+            quadroXML.demDespMedHosp = buildDespesasMedHosp(
+              quadro.despesasMedHosp
+            );
+            break;
+          case "hospitalarObstetricia":
+            quadroXML.ct_quadroHospObstInternacoes = buildInternacoes(
+              quadro.internacoes
+            );
+            quadroXML.interObstetricas = buildInterObstetricas(
+              quadro.interObstetricas
+            );
+            quadroXML.parto = buildParto(quadro.parto);
+            quadroXML.causaInterna = buildCausasInternas(quadro.causasInternas);
+            quadroXML.nascidoVivo = buildNascidoVivo(quadro.nascidoVivo);
+            quadroXML.demDespMedHosp = buildDespesasMedHosp(
+              quadro.despesasMedHosp
+            );
+            break;
+          case "odontologico":
+            quadroXML.procOdonto = buildProcOdonto(quadro.procedimentosOdonto);
+            break;
+        }
+
+        // Adicionar campos personalizados
+        if (quadro.camposPersonalizados) {
+          quadroXML.camposPersonalizados = processarCamposPersonalizados(
+            quadro.camposPersonalizados
+          );
+        }
+
+        return quadroXML;
+      })
+    : [];
+
+  return { quadro: quadros };
 };
 
 const buildSegmentacaoXML = (segmentacaoData) => {
@@ -160,129 +284,126 @@ const buildQuadroOdontologico = (data) => {
   };
 };
 
-// Funções auxiliares para construir cada seção específica
-const buildConsultasMedicas = (data) => {
-  if (!data) return {};
-  return {
-    consultasMedicas: {
-      eventos: data.eventos || 0,
-      beneficiarios: data.beneficiarios || 0,
-      despesas: formatDespesa(data.despesas),
+// Funções auxiliares para construção de elementos XML
+
+const buildConsultasMedicas = (consultasMedicas) => {
+  if (!consultasMedicas) return [];
+  return consultasMedicas.map((consulta) => ({
+    consulta: {
+      tipoConsulta: consulta.tipoConsulta,
+      quantidade: consulta.quantidade.toString().replace(".", ","),
+      valorTotal: consulta.valorTotal.toString().replace(".", ","),
     },
-  };
+  }));
 };
 
-const buildOutrosAtendimentos = (data) => {
-  if (!data) return {};
-  return {
-    outrosAtendAmb: {
-      eventos: data.eventos || 0,
-      beneficiarios: data.beneficiarios || 0,
-      despesas: formatDespesa(data.despesas),
+const buildOutrosAtendimentos = (outrosAtendimentos) => {
+  if (!outrosAtendimentos) return [];
+  return outrosAtendimentos.map((atendimento) => ({
+    itemOutroAtendAmbu: {
+      tipoAtendimento: atendimento.tipoAtendimento,
+      quantidade: atendimento.quantidade.toString().replace(".", ","),
+      valorTotal: atendimento.valorTotal.toString().replace(".", ","),
     },
-  };
+  }));
 };
 
-const buildExames = (data) => {
-  if (!data) return {};
-  return {
-    exames: {
-      eventos: data.eventos || 0,
-      beneficiarios: data.beneficiarios || 0,
-      despesas: formatDespesa(data.despesas),
+const buildExames = (exames) => {
+  if (!exames) return [];
+  return exames.map((exame) => ({
+    itemExame: {
+      tipoExame: exame.tipoExame,
+      quantidade: exame.quantidade.toString().replace(".", ","),
+      valorTotal: exame.valorTotal.toString().replace(".", ","),
     },
-  };
+  }));
 };
 
-const buildTerapias = (data) => {
-  if (!data) return {};
-  return {
-    terapias: {
-      eventos: data.eventos || 0,
-      beneficiarios: data.beneficiarios || 0,
-      despesas: formatDespesa(data.despesas),
+const buildTerapias = (terapias) => {
+  if (!terapias) return [];
+  return terapias.map((terapia) => ({
+    itemTerapia: {
+      tipoTerapia: terapia.tipoTerapia,
+      quantidade: terapia.quantidade.toString().replace(".", ","),
+      valorTotal: terapia.valorTotal.toString().replace(".", ","),
     },
-  };
+  }));
 };
 
-const buildInternacoes = (data) => {
-  if (!data) return {};
-  return {
-    tipoInternacao: {
-      eventos: data.eventos || 0,
-      beneficiarios: data.beneficiarios || 0,
-      despesas: formatDespesa(data.despesas),
+const buildDespesasMedHosp = (despesas) => {
+  if (!despesas) return [];
+  return despesas.map((despesa) => ({
+    itemDespMedHosp: {
+      tipoDespesa: despesa.tipoDespesa,
+      quantidade: despesa.quantidade.toString().replace(".", ","),
+      valorTotal: despesa.valorTotal.toString().replace(".", ","),
     },
-  };
+  }));
 };
 
-const buildInterObstetricas = (data) => {
-  if (!data) return {};
-  return {
-    obstetrica: {
-      eventos: data.eventos || 0,
+const buildInternacoes = (internacoes) => {
+  if (!internacoes) return [];
+  return internacoes.map((internacao) => ({
+    ct_internacao: {
+      tipoInternacao: internacao.tipoInternacao,
+      quantidade: internacao.quantidade.toString().replace(".", ","),
+      valorTotal: internacao.valorTotal.toString().replace(".", ","),
     },
-  };
+  }));
 };
 
-const buildParto = (data) => {
-  if (!data) return {};
-  return {
-    partoNormal: {
-      eventos: data.partoNormal?.eventos || 0,
+const buildInterObstetricas = (interObstetricas) => {
+  if (!interObstetricas) return [];
+  return interObstetricas.map((interObs) => ({
+    interObs: {
+      tipoInterObs: interObs.tipoInterObs,
+      quantidade: interObs.quantidade.toString().replace(".", ","),
+      valorTotal: interObs.valorTotal.toString().replace(".", ","),
     },
-    partoCesareo: {
-      eventos: data.partoCesareo?.eventos || 0,
-    },
-  };
+  }));
 };
 
-const buildCausasInternas = (data) => {
-  if (!data) return {};
-  return {
-    neoplasias: {
-      eventos: data.neoplasias?.eventos || 0,
+const buildCausasInternas = (causas) => {
+  if (!causas) return [];
+  return causas.map((causa) => ({
+    ct_causaInterna: {
+      tipoCausa: causa.tipoCausa,
+      quantidade: causa.quantidade.toString().replace(".", ","),
+      valorTotal: causa.valorTotal.toString().replace(".", ","),
     },
-    diabetesMellitus: {
-      eventos: data.diabetesMellitus?.eventos || 0,
-    },
-    doencasAparelhoCirc: {
-      eventos: data.doencasAparelhoCirc?.eventos || 0,
-    },
-  };
+  }));
 };
 
-const buildNascidoVivo = (data) => {
-  if (!data) return {};
-  return {
-    eventos: data.eventos || 0,
-  };
-};
-
-const buildProcOdonto = (data) => {
-  if (!data) return {};
-  return {
-    procedimentosOdonto: {
-      eventos: data.eventos || 0,
-      beneficiarios: data.beneficiarios || 0,
-      despesas: formatDespesa(data.despesas),
+const buildParto = (partos) => {
+  if (!partos) return [];
+  return partos.map((parto) => ({
+    ct_parto: {
+      tipoParto: parto.tipoParto,
+      quantidade: parto.quantidade.toString().replace(".", ","),
+      valorTotal: parto.valorTotal.toString().replace(".", ","),
     },
-  };
+  }));
 };
 
-const buildDespesasMedHosp = (data) => {
-  if (!data) return {};
-  return {
-    demaisDespMedHosp: {
-      despesas: formatDespesa(data.despesas),
+const buildNascidoVivo = (nascidosVivos) => {
+  if (!nascidosVivos) return [];
+  return nascidosVivos.map((nascido) => ({
+    nascidoVivo: {
+      pesoNascimento: nascido.pesoNascimento.toString().replace(".", ","),
+      quantidade: nascido.quantidade.toString().replace(".", ","),
     },
-  };
+  }));
 };
 
-// Função para formatar valores monetários no padrão exigido
-const formatDespesa = (value) => {
-  if (!value) return "0,00";
-  return value.toFixed(2).replace(".", ",");
+const buildProcOdonto = (procedimentosOdonto) => {
+  if (!procedimentosOdonto) return [];
+  return procedimentosOdonto.map((proc) => ({
+    procedimentoOdonto: {
+      tipoProcedimento: proc.tipoProcedimento,
+      quantidade: proc.quantidade.toString().replace(".", ","),
+      valorTotal: proc.valorTotal.toString().replace(".", ","),
+    },
+  }));
 };
 
 module.exports = {

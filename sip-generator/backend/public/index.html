@@ -719,118 +719,156 @@
     }
 
     function gerarXML() {
-      const xmlDoc = document.implementation.createDocument('', '', null);
-      const mensagemSIP = xmlDoc.createElement('mensagemSIP');
+      // Dados básicos da operadora
+      const dadosOperadora = {
+        cnpj: document.getElementById('cnpj').value,
+        registroANS: document.getElementById('registroANS').value,
+        nomeOperadora: document.getElementById('nomeOperadora').value,
+        sequencialTransacao: document.getElementById('sequencialTransacao').value,
+        dataHoraRegistro: document.getElementById('dataHoraRegistro').value,
+        versaoPadrao: document.getElementById('versaoPadrao').value,
+        softwareGerador: {
+          nomeAplicativo: document.getElementById('nomeAplicativo').value,
+          versaoAplicativo: document.getElementById('versaoAplicativo').value,
+          fabricanteAplicativo: document.getElementById('fabricanteAplicativo').value
+        }
+      };
 
-      // Cabeçalho
-      const cabecalho = gerarCabecalho(xmlDoc);
-      mensagemSIP.appendChild(cabecalho);
+      const periodoReconhecimento = {
+        ano: document.getElementById('anoReconhecimento').value,
+        trimestre: document.getElementById('trimestreReconhecimento').value
+      };
 
-      // Mensagem
-      const mensagem = xmlDoc.createElement('mensagem');
-      const operadoraParaANS = xmlDoc.createElement('operadoraParaANS');
-      const sipOperadoraParaAns = xmlDoc.createElement('sipOperadoraParaAns');
-      const envioSip = xmlDoc.createElement('envioSip');
+      const formasContratacao = {
+        individualFamiliar: coletarDadosContratacao('individualFamiliar'),
+        coletivoEmpresarial: coletarDadosContratacao('coletivoEmpresarial'),
+        coletivoAdesao: coletarDadosContratacao('coletivoAdesao')
+      };
 
-      // Data Trimestre Reconhecimento
-      const dataTrimestreReconhecimento = xmlDoc.createElement('dataTrimestreReconhecimento');
-      const diaRecon = xmlDoc.createElement('dia');
-      diaRecon.textContent = '01';
-      dataTrimestreReconhecimento.appendChild(diaRecon);
+      const dadosCompletos = {
+        cabecalho: {
+          cnpj: dadosOperadora.cnpj,
+          registroANS: dadosOperadora.registroANS,
+          nomeOperadora: dadosOperadora.nomeOperadora,
+          sequencialTransacao: dadosOperadora.sequencialTransacao,
+          dataHoraRegistro: dadosOperadora.dataHoraRegistro,
+          versaoPadrao: dadosOperadora.versaoPadrao
+        },
+        softwareGerador: dadosOperadora.softwareGerador,
+        periodoReconhecimento: {
+          anoReconhecimento: periodoReconhecimento.ano,
+          trimestreReconhecimento: periodoReconhecimento.trimestre
+        },
+        formasContratacao: formasContratacao
+      };
 
-      const mesRecon = xmlDoc.createElement('mes');
-      mesRecon.textContent = document.getElementById('trimestreReconhecimento').value;
-      dataTrimestreReconhecimento.appendChild(mesRecon);
+      // Enviar dados para o backend para geração do XML
+      fetch('/gerar-sip', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dadosCompletos)
+      })
+        .then(response => response.text())
+        .then(xmlString => {
+          // Atualizar preview
+          const pre = document.getElementById('xml-output');
+          pre.textContent = vkBeautify.xml(xmlString);
+          document.getElementById('download-btn').disabled = false;
+        })
+        .catch(error => {
+          console.error('Erro ao gerar XML:', error);
+          alert('Erro ao gerar XML. Verifique os dados e tente novamente.');
+        });
+    }
 
-      const anoRecon = xmlDoc.createElement('ano');
-      anoRecon.textContent = document.getElementById('anoReconhecimento').value;
-      dataTrimestreReconhecimento.appendChild(anoRecon);
+    function coletarDadosContratacao(tipoContratacao) {
+      const checkbox = document.getElementById(`habilitar${capitalizeFirst(tipoContratacao)}`);
+      if (!checkbox || !checkbox.checked) {
+        return null;
+      }
 
-      envioSip.appendChild(dataTrimestreReconhecimento);
+      const segmentacoes = [];
+      const segmentacoesContainer = document.getElementById(`${tipoContratacao}Segmentacoes`);
 
-      // Formas de Contratação
-      const formaContratacao = xmlDoc.createElement('formaContratacao');
+      for (const segmentacaoEl of segmentacoesContainer.children) {
+        const segmentacao = {
+          uf: segmentacaoEl.querySelector(`[id$="_uf"]`).value,
+          ano: segmentacaoEl.querySelector(`[id$="_ano"]`).value,
+          trimestre: segmentacaoEl.querySelector(`[id$="_trimestre"]`).value,
+          ambulatorial: null,
+          hospitalar: null,
+          hospitalarObstetricia: null,
+          odontologico: null
+        };
 
-      // Processar cada tipo de contratação habilitado
-      const tiposContratacao = ['individualFamiliar', 'coletivoEmpresarial', 'coletivoAdesao'];
+        const tiposSegmentacao = ['ambulatorial', 'hospitalar', 'hospitalarObstetricia', 'odontologico'];
 
-      for (const tipo of tiposContratacao) {
-        const checkbox = document.getElementById(`habilitar${capitalizeFirst(tipo)}`);
-        if (checkbox && checkbox.checked) {
-          const tipoElement = xmlDoc.createElement(tipo);
-          const segmentacoesContainer = document.getElementById(`${tipo}Segmentacoes`);
+        for (const tipo of tiposSegmentacao) {
+          const checkbox = segmentacaoEl.querySelector(`[id$="_${tipo}"]`);
+          if (checkbox && checkbox.checked) {
+            segmentacao[tipo] = coletarDadosSegmentacao(tipoContratacao, segmentacaoEl.dataset.index, tipo);
+          }
+        }
 
-          for (let i = 0; i < segmentacoesContainer.children.length; i++) {
-            const segmentacaoDiv = segmentacoesContainer.children[i];
-            const segmentacao = xmlDoc.createElement('segmentacao');
+        segmentacoes.push(segmentacao);
+      }
 
-            // Processar cada tipo de segmentação habilitado
-            const tiposSegmentacao = ['ambulatorial', 'hospitalar', 'hospitalarObstetricia', 'odontologico'];
+      return { segmentacao: segmentacoes };
+    }
 
-            for (const tipoSeg of tiposSegmentacao) {
-              const segCheckbox = document.getElementById(`${tipo}_${i}_${tipoSeg}`);
-              if (segCheckbox && segCheckbox.checked) {
-                const segElement = xmlDoc.createElement(tipoSeg);
-                const quadro = xmlDoc.createElement('quadro');
+    function coletarDadosSegmentacao(tipoContratacao, segmentacaoIndex, tipoSegmentacao) {
+      const quadro = {
+        dataTrimestreOcorrencia: null,
+        uf: null,
+        camposPersonalizados: null
+      };
 
-                // Data Trimestre Ocorrência
-                const dataTrimestreOcorrencia = xmlDoc.createElement('dataTrimestreOcorrencia');
-                const diaOcor = xmlDoc.createElement('dia');
-                diaOcor.textContent = '01';
-                dataTrimestreOcorrencia.appendChild(diaOcor);
+      const estrutura = estruturaSegmentacoes[tipoSegmentacao];
+      const dadosQuadro = {};
 
-                const mesOcor = xmlDoc.createElement('mes');
-                mesOcor.textContent = document.getElementById(`${tipo}_${i}_trimestre`).value;
-                dataTrimestreOcorrencia.appendChild(mesOcor);
+      for (const [grupoNome, grupoConfig] of Object.entries(estrutura.grupos)) {
+        dadosQuadro[grupoNome] = coletarCamposGrupo(tipoContratacao, segmentacaoIndex, tipoSegmentacao, grupoNome);
+      }
 
-                const anoOcor = xmlDoc.createElement('ano');
-                anoOcor.textContent = document.getElementById(`${tipo}_${i}_ano`).value;
-                dataTrimestreOcorrencia.appendChild(anoOcor);
+      return { quadro: [{ ...dadosQuadro }] };
+    }
 
-                quadro.appendChild(dataTrimestreOcorrencia);
+    function coletarCamposGrupo(tipoContratacao, segmentacaoIndex, tipoSegmentacao, grupoNome) {
+      const grupos = {};
+      const prefixo = `${tipoContratacao}_${segmentacaoIndex}_${tipoSegmentacao}_${grupoNome}`;
 
-                // UF
-                const uf = xmlDoc.createElement('uf');
-                uf.textContent = document.getElementById(`${tipo}_${i}_uf`).value;
-                quadro.appendChild(uf);
+      const estrutura = estruturaSegmentacoes[tipoSegmentacao].grupos[grupoNome];
 
-                // Processar campos da segmentação
-                processarCamposSegmentacao(xmlDoc, quadro, tipoSeg, `${tipo}_${i}_${tipoSeg}`);
+      if (estrutura.itens) {
+        for (const [itemNome, itemConfig] of Object.entries(estrutura.itens)) {
+          const itemPrefixo = `${prefixo}_${itemNome}`;
+          const eventosInput = document.getElementById(`${itemPrefixo}_eventos`);
+          const beneficiariosInput = document.getElementById(`${itemPrefixo}_beneficiarios`);
+          const despesasInput = document.getElementById(`${itemPrefixo}_despesas`);
 
-                segElement.appendChild(quadro);
-                segmentacao.appendChild(segElement);
-              }
-            }
+          const itemDados = {};
 
-            tipoElement.appendChild(segmentacao);
+          if (eventosInput && eventosInput.value) {
+            itemDados.quantidade = parseFloat(eventosInput.value);
           }
 
-          formaContratacao.appendChild(tipoElement);
+          if (beneficiariosInput && beneficiariosInput.value) {
+            itemDados.beneficiarios = parseFloat(beneficiariosInput.value);
+          }
+
+          if (despesasInput && despesasInput.value) {
+            itemDados.valorTotal = parseFloat(despesasInput.value);
+          }
+
+          if (Object.keys(itemDados).length > 0) {
+            grupos[itemNome] = itemDados;
+          }
         }
       }
 
-      envioSip.appendChild(formaContratacao);
-      sipOperadoraParaAns.appendChild(envioSip);
-      operadoraParaANS.appendChild(sipOperadoraParaAns);
-      mensagem.appendChild(operadoraParaANS);
-      mensagemSIP.appendChild(mensagem);
-
-      // Epílogo
-      const epilogo = xmlDoc.createElement('epilogo');
-      const hash = xmlDoc.createElement('hash');
-      hash.textContent = ''; // Hash seria calculado posteriormente
-      epilogo.appendChild(hash);
-      mensagemSIP.appendChild(epilogo);
-
-      xmlDoc.appendChild(mensagemSIP);
-
-      const serializer = new XMLSerializer();
-      const xmlString = serializer.serializeToString(xmlDoc);
-
-      // Atualizar preview
-      const pre = document.getElementById('xml-output');
-      pre.textContent = vkBeautify.xml(xmlString);
-      document.getElementById('download-btn').disabled = false;
+      return grupos;
     }
 
     function gerarCabecalho(xmlDoc) {

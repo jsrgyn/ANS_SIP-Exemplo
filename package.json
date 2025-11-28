@@ -1,5 +1,10 @@
 {
   "devDependencies": {
     "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.3.2",
+    "xml-validator": "^0.2.0",
+    "xmlbuilder": "^15.1.1"
   }
 }
